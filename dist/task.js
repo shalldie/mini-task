@@ -31,7 +31,7 @@ task.callbacks = function () {
         switch (fireType) {
             case 'default':
                 item = function (next) {
-                    cb.apply(null, args);
+                    cb.apply(null, [].slice.call(arguments, 1));
                     next();
                 };
                 break;
@@ -43,12 +43,15 @@ task.callbacks = function () {
         item && list.push(item);
     }
 
+    var params = [];
+
     function fire() {       // 触发
         if (statu || !list.length) return;
 
         statu = 1;
         fireIndex = 0;
 
+        params = [].slice.apply(arguments);
         dequeue();
 
     }
@@ -56,6 +59,10 @@ task.callbacks = function () {
     function dequeue() {   // 出列
         var item = list[fireIndex++],
             args = [].slice.call(arguments);
+
+        if (fireType == 'default') {
+            args = params.slice(); 
+        }
 
         if (!item) return;
         args.unshift(dequeue);

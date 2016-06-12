@@ -22,3 +22,8 @@ gulp.task('default', function () {
         .pipe(concat('task.min.js'))
         .pipe(gulp.dest(paths.jsTo));
 });
+
+gulp.task('watch', function () {
+    gulp.watch(paths.jsFrom, ['default']);
+});
+
