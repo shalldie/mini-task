@@ -1,26 +1,42 @@
 var gulp = require('gulp'),
-    wrap = require('./lib/gulp-wrap'),
     uglify = require('gulp-uglify'),
-    concat = require('gulp-concat'),
     plumber = require('gulp-plumber'),
-    notify = require('gulp-notify');
-
+    notify = require('gulp-notify'),
+    browserify = require('browserify'),
+    source = require("vinyl-source-stream"),
+    buffer = require('vinyl-buffer'),
+    rename = require('gulp-rename');
 
 var paths = {
-    jsFrom: './src/*.js',
-    jsTo: './dist'
-};
-
+    jsFrom: './src/**/*.js',  // 所有js文件
+    jsBase: './src/task.js',  // 入口文件
+    jsTo: './dist',
+    jsName: 'task.js',
+    jsMinName: 'task.min.js'
+}
 
 gulp.task('default', function () {
-    return gulp.src(paths.jsFrom)
-        .pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }))
-        .pipe(concat('task.js'))
-        .pipe(wrap(';(function(){\n', '\n})();'))
-        .pipe(gulp.dest(paths.jsTo))
+    return browserify({
+        entries: [paths.jsBase]
+    })
+        .bundle()
+        .pipe(plumber(
+            { errorHandler: notify.onError('Error: <%= error.message %>') }
+        ))
+        .pipe(source(
+            paths.jsName
+        ))
+        .pipe(gulp.dest(
+            paths.jsTo
+        ))
+        .pipe(buffer())
         .pipe(uglify())
-        .pipe(concat('task.min.js'))
-        .pipe(gulp.dest(paths.jsTo));
+        .pipe(rename(
+            paths.jsMinName
+        ))
+        .pipe(gulp.dest(
+            paths.jsTo
+        ));
 });
 
 gulp.task('watch', function () {

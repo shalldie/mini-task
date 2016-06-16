@@ -1,9 +1,12 @@
-var task = {};
+var task = require('./core');
+
+task.callbacks = require('./callbacks');
 
 
-if (typeof module != "undefined" && module.exports) {
-    module.exports = task;
-}
-else {
-    window["task"] = task;
-}
+
+// require('./queue'); 
+
+// 适配 amd 模式， window 环境
+require('./exports/exports')(task);
+
+module.exports = task;

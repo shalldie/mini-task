@@ -1,4 +1,4 @@
-task.callbacks = function () {
+var callbacks = function () {
 
     var list = [],        // 回调数组
         fireIndex = -1,   // 当前正在回调的索引
@@ -51,7 +51,7 @@ task.callbacks = function () {
             args = [].slice.call(arguments);
 
         if (statu == 'default') {
-            args = params.slice(); 
+            args = params.slice();
         }
 
         if (!item) return;
@@ -64,3 +64,7 @@ task.callbacks = function () {
         fire: fire
     };
 };
+
+
+module.exports = callbacks;
+
