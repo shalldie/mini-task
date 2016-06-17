@@ -106,6 +106,8 @@ module.exports = function (task) {
 },{}],6:[function(require,module,exports){
 var task = require('./core');
 
+task.tool = require('./tool');
+
 task.callbacks = require('./callbacks');
 
 
@@ -116,4 +118,32 @@ task.callbacks = require('./callbacks');
 require('./exports/exports')(task);
 
 module.exports = task;
-},{"./callbacks":1,"./core":2,"./exports/exports":4}]},{},[6]);
+},{"./callbacks":1,"./core":2,"./exports/exports":4,"./tool":7}],7:[function(require,module,exports){
+var tool = {
+    type: function (sender) {
+        // sender+'' 压缩之后，比'null' 长度要少...
+        return sender === null ? (sender + '') : Object.prototype.toString.call(sender).toLowerCase().match(/\s(\S+?)\]/)[1];
+    },
+    each: function (sender, callback) {
+        var i = 0,                      // 循环用变量
+            len = sender.length,           // 长度
+            arrayLike = this.arrayLike(sender); // 是否属于(类)数组
+
+        if (arrayLike) {
+            for (; i < len; i++) {
+                callback.call(sender[i], i, sender[i]);
+            }
+        } else {
+            for (i in sender) {
+                callback.call(sender[i], i, sender[i]);
+            }
+        }
+    },
+    arrayLike: function (sender) {
+        // duck typing ，检测是否属于数组
+        return this.type(sender.length) == 'number' && this.type(sender.splice == 'function');
+    }
+};
+
+module.exports = tool;
+},{}]},{},[6]);

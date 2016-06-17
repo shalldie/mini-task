@@ -1,5 +1,7 @@
 var task = require('./core');
 
+task.tool = require('./tool');
+
 task.callbacks = require('./callbacks');
 
 
