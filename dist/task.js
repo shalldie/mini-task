@@ -71,7 +71,9 @@ module.exports = callbacks;
 
 
 },{}],2:[function(require,module,exports){
-var task = {};
+var task = {
+    ver:'1.0.0'
+};
 
 module.exports = task;
 },{}],3:[function(require,module,exports){
