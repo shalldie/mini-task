@@ -20,7 +20,7 @@ var tool = {
     },
     arrayLike: function (sender) {
         // duck typing ，检测是否属于数组
-        return this.type(sender.length) == 'number' && this.type(sender.splice == 'function');
+        return this.type(sender.length) == 'number' && this.type(sender.splice) == 'function';
     }
 };
 
