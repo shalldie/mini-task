@@ -4,6 +4,8 @@ task.tool = require('./tool');
 
 task.callbacks = require('./callbacks');
 
+task.queue = require('./queue');
+
 
 
 // require('./queue'); 

@@ -1,37 +1,39 @@
 var queue = function () {
-    var callbacks = [],
+    var list = [],
         args = [],
         nowIndex = -1,
-        notify = function () { };
+        callbacks = require('./callbacks')();
 
     function next() {
         nowIndex++;
-        if (nowIndex >= callbacks.length) {
-            notify();
+        if (nowIndex >= list.length) {
+            callbacks.fire();
             return;
         }
 
         args = [].slice.call(arguments);
-        callbacks[nowIndex]();
+        list[nowIndex]();
     }
 
-    function add(cb) {
-        callbacks.push(function () {
+    function queue(cb) {
+        list.push(function () {
             args.unshift(next);
             cb.apply(null, args);
         });
     }
 
-    function fire() {
+    function dequeue() {
         next.apply([], arguments);
     }
 
+    function notify(cb) {
+        callbacks.add(cb);
+    }
+
     return {
-        add: add,
-        fire: fire,
-        notify: function () {
-            notify = arguments[0] || function () { };
-        }
+        queue: queue,
+        dequeue: dequeue,
+        notify: notify
     }
 };
 
