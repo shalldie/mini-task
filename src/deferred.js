@@ -1,4 +1,6 @@
-var deferred = function () {
+var task = require("./core");
+
+task.deferred = function () {
     var thenCallbacks = require('./callbacks')(),
         failCallbacks = require('./callbacks')();
 
@@ -33,4 +35,4 @@ var deferred = function () {
     }
 };
 
-module.exports = deferred;
+module.exports = task.deferred;

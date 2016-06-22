@@ -1,3 +1,5 @@
+var task = require("./core");
+
 var tool = {
     type: function (sender) {
         // sender+'' 压缩之后，比'null' 长度要少...
@@ -24,4 +26,4 @@ var tool = {
     }
 };
 
-module.exports = tool;
+module.exports = task.tool;

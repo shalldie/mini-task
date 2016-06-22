@@ -1,5 +1,7 @@
-var queue = function () {
-    var obj={},         // 当前实例，用于链式调用
+var task = require('./core');
+
+task.queue = function () {
+    var obj = {},         // 当前实例，用于链式调用
         list = [],
         args = [],
         nowIndex = -1,
@@ -51,12 +53,12 @@ var queue = function () {
         return obj;
     }
 
-    obj.queue=queue;
-    obj.will=will;
-    obj.delay=delay;
-    obj.dequeue=dequeue;
-    obj.notify=notify;
+    obj.queue = queue;
+    obj.will = will;
+    obj.delay = delay;
+    obj.dequeue = dequeue;
+    obj.notify = notify;
     return obj;
 };
 
-module.exports = queue;
+module.exports = task.queue;

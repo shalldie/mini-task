@@ -1,4 +1,6 @@
-module.exports = function (task) {
+var task = require("./../core");
+
+module.exports = function () {
     if (typeof window !== 'undefined') {
         var _task = window.task;
 
