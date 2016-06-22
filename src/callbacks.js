@@ -6,12 +6,14 @@ task.callbacks = function (argString) {
 
     function add(cb) {
         list.push(cb);
+        return this;
     }
 
     function fire() {
         for (var i = 0, len = list.length; i < len; i++) {
             list[i].apply(null, arguments);
         }
+        return this;
     }
 
     return {

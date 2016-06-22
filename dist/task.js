@@ -7,12 +7,14 @@ task.callbacks = function (argString) {
 
     function add(cb) {
         list.push(cb);
+        return this;
     }
 
     function fire() {
         for (var i = 0, len = list.length; i < len; i++) {
             list[i].apply(null, arguments);
         }
+        return this;
     }
 
     return {
@@ -68,8 +70,7 @@ module.exports = function () {
 var task = require('./core');
 
 task.queue = function () {
-    var obj = {},         // 当前实例，用于链式调用
-        list = [],
+    var list = [],
         args = [],
         nowIndex = -1,
         callbacks = require('./callbacks')();
@@ -90,7 +91,7 @@ task.queue = function () {
             args.unshift(next);
             cb.apply(null, args);
         });
-        return obj;
+        return this;
     }
 
     function delay(num) {
@@ -99,7 +100,7 @@ task.queue = function () {
                 next();
             }, num);
         });
-        return obj;
+        return this;
     }
 
     function will(cb) {
@@ -107,25 +108,26 @@ task.queue = function () {
             cb();
             next();
         })
-        return obj;
+        return this;
     }
 
     function dequeue() {
         next.apply([], arguments);
-        return obj;
+        return this;
     }
 
     function notify(cb) {
         callbacks.add(cb);
-        return obj;
+        return this;
     }
 
-    obj.queue = queue;
-    obj.will = will;
-    obj.delay = delay;
-    obj.dequeue = dequeue;
-    obj.notify = notify;
-    return obj;
+    return {
+        queue:queue,
+        will:will,
+        delay:delay,
+        dequeue:dequeue,
+        notify:notify
+    };
 };
 
 module.exports = task.queue;
