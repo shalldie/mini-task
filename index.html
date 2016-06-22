@@ -8,40 +8,88 @@
 
 <body>
     <style>
+        body {
+            font: 13px/1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+        
         #wrap {
             width: 500px;
             height: 300px;
             line-height: 300px;
             text-align: center;
             border-radius: 6px;
-            box-shadow: 0 0 16px 2px #2ad;
+            /*box-shadow: 0 0 16px 2px #2ad;*/
             margin: 50px auto;
             font-size: 64px;
+            border: 1px solid #ddd;
         }
         
         button {
             width: 100px;
             height: 40px;
             cursor: pointer;
+            color: #fff;
+            border: 1px solid #d5d5d5;
+            border-radius: 3px;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.15);
+            background-color: #60b044;
+            background-image: linear-gradient(#8add6d, #60b044);
+            border-color: #5ca941;
+            outline: none;
+        }
+        
+        button:hover {
+            color: #fff;
+            background-color: #569e3d;
+            background-image: linear-gradient(#79d858, #569e3d);
+            border-color: #4a993e;
+        }
+        
+        button:active {
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+            background-color: #569e3d;
+            background-image: none;
+            border-color: #418737;
+        }
+        
+        #area {
+            display: block;
+            border: 1px solid #ddd;
+            margin: 10px auto;
+            font-size: 16px;
+            color: #666;
+            outline: none;
+            transition: border-color .3s,box-shadow .3s;
+            width: 500px;
+            height: 300px;
+        }
+
+        #area:focus{
+            border-color: #2ad;
+            box-shadow: 0 0 18px 0 #2ad;
         }
     </style>
     <div id="wrap">
         <button type="button">Click to see!</button>
     </div>
+    <textarea id="area">
+    var q = task.queue(),
+        wrap = document.getElementById("wrap");
+    for (var i = 0; i < 10; i++) {
+        q.will(function () {
+            wrap.innerHTML = new Date().getSeconds();
+        }).delay(1000);
+    }
+    q.notify(function () {
+        wrap.innerHTML = 'over...';
+    })
+    q.dequeue();
+    </textarea>
     <script src="dist/task.js"></script>
     <script>
         document.getElementsByTagName("button")[0].onclick=function(){
-            var q = task.queue(),
-                wrap = document.getElementById("wrap");
-            for (var i = 0; i < 10; i++) {
-                q.will(function () {
-                    wrap.innerHTML = new Date().getSeconds();
-                }).delay(1000);
-            }
-            q.notify(function () {
-                wrap.innerHTML = 'over...';
-            })
-            q.dequeue();
+            var content=document.getElementById("area").value;
+            eval(content);
         }
     </script>
 </body>
