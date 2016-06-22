@@ -1,8 +1,9 @@
 var task = require("./core");
+var callbacks = require("./callbacks");
 
 task.deferred = function () {
-    var thenCallbacks = require('./callbacks')(),
-        failCallbacks = require('./callbacks')();
+    var thenCallbacks = callbacks(),
+        failCallbacks = callbacks();
 
 
     function then() {
