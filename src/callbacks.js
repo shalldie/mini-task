@@ -1,8 +1,9 @@
 var task = require('./core');
-task.callbacks = function (argString) {
+task.callbacks = function (options) {
     var list = [],
-        once = argString && ~argString.indexOf('once'),         // 只执行一次，即执行完毕就清空
-        memory = argString && ~argString.indexOf('memory');     // 保持状态，
+        argsArr = (options || '').split(' '),
+        once = ~argsArr.indexOf('once'),         // 只执行一次，即执行完毕就清空
+        memory = ~argsArr.indexOf('memory');     // 保持状态，
 
     function add(cb) {
         list.push(cb);
