@@ -53,11 +53,11 @@ task.queue = function () {
     }
 
     return {
-        queue:queue,
-        will:will,
-        delay:delay,
-        dequeue:dequeue,
-        notify:notify
+        queue: queue,
+        will: will,
+        delay: delay,
+        dequeue: dequeue,
+        notify: notify
     };
 };
 
