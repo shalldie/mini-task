@@ -3,11 +3,11 @@ var task = require('./core');
 task.queue = function () {
     var list = [],
         args = [],
-        nowIndex = -1,
+        nowIndex = 0,
+        fireState = 0,                                     // 触发状态  0-未触发过 1-触发中  2-触发完毕
         callbacks = require('./callbacks')();
 
     function next() {
-        nowIndex++;
         if (nowIndex >= list.length) {
             callbacks.fire();
             return;
@@ -15,6 +15,7 @@ task.queue = function () {
 
         args = [].slice.call(arguments);
         list[nowIndex]();
+        nowIndex++;
     }
 
     function queue(cb) {

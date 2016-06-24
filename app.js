@@ -1,27 +1,15 @@
 var task = require('./src/task');
 
-var q = task.queue();
+var callbacks = task.callbacks();
 
-var k = 0;
+var fn = n => console.log(n+n);
 
-// var q = Queue();
+callbacks.add(fn);
 
-q.notify(function () {
-    console.log('over...');
-})
+callbacks.fire(1);
 
-for (var i = 0; i < 5; i++) {
-    // q.will(function () {
-    //     console.log(new Date().getSeconds());
-    // }).delay(1000);
-    q.queue(function (next) {
-        console.log(k++);
-        setTimeout(function () {
-            next();
-        }, 1000);
-    }).will(function () {
-        console.log(k++);
-    }).delay(1000);
-}
+callbacks.add(fn);
 
-q.dequeue();
+callbacks.fire(1);
+
+// callbacks.disable();
