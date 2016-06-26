@@ -23,7 +23,25 @@ var tool = {
     arrayLike: function (sender) {
         // duck typing ，检测是否属于数组
         return this.type(sender.length) == 'number' && this.type(sender.splice) == 'function';
+    },
+    makeArray: function (sender) {
+        try {
+            return [].slice.call(sender);
+        }
+        catch (ex) {
+            var arr = [],
+                i = 0,
+                len = sender.length;
+            for (; i < len; i++) {
+                arr.push(sender[i]);
+            }
+            return arr;
+        }
     }
 };
+
+for (var k in tool) {
+    task[k] = tool[k];
+}
 
 module.exports = task.tool;

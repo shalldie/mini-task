@@ -6,6 +6,8 @@ require('./callbacks');
 
 require('./queue');
 
+require('./deferred');
+
 
 
 // require('./queue'); 

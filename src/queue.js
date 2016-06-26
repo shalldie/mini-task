@@ -1,28 +1,28 @@
 var task = require('./core');
 
 task.queue = function () {
-    var list = [],
-        args = [],
-        nowIndex = 0,
-        fireState = 0,                                     // 触发状态  0-未触发过 1-触发中  2-触发完毕
-        callbacks = require('./callbacks')();
+    var list = [],                                         // 队列列表
+        args = [],                                         // 当前参数
+        fireState = 0;                                     // 触发状态  0-未触发过 1-触发中  2-触发完毕
 
     function next() {
-        if (nowIndex >= list.length) {
-            callbacks.fire();
+        fireState = 1;
+        if (!list.length) {  // 如果队列已经执行完毕，返回
+            fireState = 2;
             return;
         }
-
-        args = [].slice.call(arguments);
-        list[nowIndex]();
-        nowIndex++;
+        args = task.makeArray(arguments);
+        args.unshift(next);
+        list.shift()();          //取出第一项并执行
     }
 
     function queue(cb) {
         list.push(function () {
-            args.unshift(next);
             cb.apply(null, args);
         });
+        if (fireState == 2) {  // 如果队列已经执行完毕，重新触发
+            next();
+        }
         return this;
     }
 
@@ -44,12 +44,8 @@ task.queue = function () {
     }
 
     function dequeue() {
+        if (fireState) return;
         next.apply([], arguments);
-        return this;
-    }
-
-    function notify(cb) {
-        callbacks.add(cb);
         return this;
     }
 
@@ -57,8 +53,7 @@ task.queue = function () {
         queue: queue,
         will: will,
         delay: delay,
-        dequeue: dequeue,
-        notify: notify
+        dequeue: dequeue
     };
 };
 

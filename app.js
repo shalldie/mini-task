@@ -1,15 +1,27 @@
 var task = require('./src/task');
 
-var callbacks = task.callbacks();
+var dfd = task.deferred();
 
-var fn = n => console.log(n+n);
 
-callbacks.add(fn);
+dfd.then(function () {
+    console.log(1);
+}).then(function () {
+    console.log(2);
+});
 
-callbacks.fire(1);
+console.log('ready');
 
-callbacks.add(fn);
+dfd.resolve();
 
-callbacks.fire(1);
+dfd.then(function () {
+    console.log(3);
+}).then(() => console.log(4));
 
-// callbacks.disable();
+
+// var cb = task.callbacks('once memory');
+
+// cb.add(() => console.log(1));
+
+// cb.add(() => console.log(2));
+
+// cb.fire();

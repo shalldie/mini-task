@@ -12,17 +12,17 @@ task.callbacks = function () {
             cb.apply(null, memory);
         }
 
-        if (!disabled()) return this;      // 如果被disabled
+        if (disabled()) return this;      // 如果被disabled
 
         list.push(cb);
         return this;
     }
 
     function fire() {
-        if (!disabled()) return this; // 如果被禁用
+        if (disabled()) return this; // 如果被禁用
 
         if (memory) {     // 如果是memory模式，保存参数
-            memory = [].slice.call(arguments);
+            memory = task.makeArray(arguments);
         }
 
         fireState = 1;
