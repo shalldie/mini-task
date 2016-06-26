@@ -77,14 +77,26 @@ task.deferred = function () {
         ['reject', 'catch', task.callbacks('once memory'), 'rejected']
     ];
 
-    var dfd = {            // 返回的延迟对象
-        state: 'pending'   //状态
+    var dfd = {                // 返回的延迟对象
+        state: 'pending',      // 状态
+        promise: function () { // promise - 仅提供接口用于注册/订阅
+            var self = this;
+            var pro = {
+                state: function () {
+                    return self.state;
+                }
+            };
+            task.each(tuples, function (i, tuple) {
+                pro[tuple[1]] = self[tuple[1]];
+            });
+            return pro;
+        }
     };
 
     task.each(tuples, function (i, tuple) {
         dfd[tuple[0]] = function () {       // 触发
             tuple[2].fire.apply(tuple[2], task.makeArray(arguments));
-            dfd.state = tuple[3];
+            this.state = tuple[3];
             return this;
         };
         dfd[tuple[1]] = function (cb) {     // 绑定
