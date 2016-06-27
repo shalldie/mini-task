@@ -1,21 +1,21 @@
 var task = require('./src/task');
 
-var dfd = task.deferred();
+// var dfd = task.deferred();
 
 
-dfd.then(function () {
-    console.log(1);
-}).then(function () {
-    console.log(2);
-});
+// dfd.then(function () {
+//     console.log(1);
+// }).then(function () {
+//     console.log(2);
+// });
 
-console.log('ready');
+// console.log('ready');
 
-dfd.resolve();
+// dfd.resolve();
 
-dfd.then(function () {
-    console.log(3);
-}).then(() => console.log(4));
+// dfd.then(function () {
+//     console.log(3);
+// }).then(() => console.log(4));
 
 
 // var cb = task.callbacks('once memory');
@@ -25,3 +25,12 @@ dfd.then(function () {
 // cb.add(() => console.log(2));
 
 // cb.fire();
+
+task.series({
+    name: function () {
+
+    },
+    age: function () {
+
+    }
+})
