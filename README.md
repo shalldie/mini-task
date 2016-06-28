@@ -113,11 +113,11 @@
     // out:
     // 2
 
-    and 'stopOnFalse' ... U know what it is.Stop when a function returns false;
-    还有 'stopOnFalse' ... 望文生义，某个function返回false的时候就停了。
+    // and 'stopOnFalse' ... U know what it is.Stop when a function returns false;
+    // 还有 'stopOnFalse' ... 望文生义，某个function返回false的时候就停了。
 
-    All args can use together,split by space
-    所有的参数，都可以放在一起使用，用空格分离。
+    // All args can use together,split by space
+    // 所有的参数，都可以放在一起使用，用空格分离。
     
     var cb = task.callbacks('once memory'); //usefull,like a deferred! 很有用，有些类似deferred。
 ```
@@ -140,8 +140,8 @@
     q.dequeue(1);
     // out:1 2 4 8 16 32 64 128 256 512
 
-    If u don't need params(如果不需要参数)：
-    var q = task.queue();
+    // If u don't need params(如果不需要参数)：
+    // var q = task.queue();
 
     for(var i=0;i<10;i++){
         q.will(function(){
@@ -153,8 +153,8 @@
     // It likes a block~
     // 像闹钟一样，每秒打印一次
 
-    Error? 万一某个地方有错误呢？
-    Please use catch,请用catch
+    // Error? 万一某个地方有错误呢？
+    // Please use catch,请用catch
 
     var q = task.queue();
 
