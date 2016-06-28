@@ -141,9 +141,10 @@
     q.dequeue(1);
     // out:1 2 4 8 16 32 64 128 256 512
 ```
-    If u don't need params(如果不需要参数)：
-    var q = task.queue();
+    If u don't need params(如果不需要参数)：    
 ```js
+    var q = task.queue();
+
     for(var i=0;i<10;i++){
         q.will(function(){
             console.log(new Date().getSeconds());
