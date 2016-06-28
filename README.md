@@ -61,7 +61,7 @@
     Like jQuery.Callbacks,follow Pub/Sub
     跟jq的callbacks很像，这里我看了它的代码，在我能看懂的范围内及其精简化。
     主要就是观察者模式 (发布/订阅)。
-
+```js
     var cb = task.callbacks();
 
     cb.add(function(n){
@@ -120,9 +120,10 @@
     所有的参数，都可以放在一起使用，用空格分离。
     
     var cb = task.callbacks('once memory'); //usefull,like a deferred! 很有用，有些类似deferred。
+```
 
 ### queue
-    
+```js
     Base method(基础的方法)：
 
     var q = task.queue();
@@ -174,7 +175,7 @@
 
     q.dequeue();
     // out:[Error: I'm a error!]
-
+```
 ### deferred
 
     Done,description is coming.
