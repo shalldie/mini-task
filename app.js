@@ -33,42 +33,61 @@ var task = require('./src/task');
 
 // cb.fire();
 
-task.series({
-    name: function (next) {
-        setTimeout(function () {
-            next('tom');
-        }, 100);
-    },
-    age: function (next) {
-        // throw Error('sth error');
-        setTimeout(function () {
-            next(12);
-        }, 100);
-    }
-}, function (err, result) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    console.log(result);
-});
+// task.series({
+//     name: function (next) {
+//         setTimeout(function () {
+//             next('tom');
+//         }, 100);
+//     },
+//     age: function (next) {
+//         // throw Error('sth error');
+//         setTimeout(function () {
+//             next(12);
+//         }, 100);
+//     }
+// }, function (err, result) {
+//     if (err) {
+//         console.log(err);
+//         return;
+//     }
+//     console.log(result);
+// });
 
-task.series([
-    function (next) {
-        setTimeout(function () {
-            next('tom');
-        }, 100);
-    },
-    function (next) {
-        // throw Error('sth error');
-        setTimeout(function () {
-            next(12);
-        }, 100);
-    }
-], function (err, result) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    console.log(result);
-})
+// task.series([
+//     function (next) {
+//         setTimeout(function () {
+//             next('tom');
+//         }, 100);
+//     },
+//     function (next) {
+//         // throw Error('sth error');
+//         setTimeout(function () {
+//             next(12);
+//         }, 100);
+//     }
+// ], function (err, result) {
+//     if (err) {
+//         console.log(err);
+//         return;
+//     }
+//     console.log(result);
+// });
+
+// var q = task.queue();
+
+// q
+// .queue(function(next){
+//     //......
+//     next();
+// })
+// .will(function(){
+//     throw Error("I'm a error!")
+// })
+// .will(function(){
+//     //......
+// })
+// .catch(function(err){
+//     console.log(err);
+// })
+
+// q.dequeue();
