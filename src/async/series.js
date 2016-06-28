@@ -24,23 +24,28 @@ task.series = function (sender, cb) {
         next();
     };
 
-    for(var i=0,len=queueArr.length;i<len;i++){    // 队列方法，交叉放入队列
-        queue.queue(queueArr[i]);
-        queue.queue(func);
-    }
-    
+    task.each(queueArr,function(i,item){  // 队列方法，交叉放入队列
+        queue.queue(item).queue(func);
+    });
 
 
-    // var result = ifObj ? {} : [];
-    // task.each(sender, function (k, func) {
-    //     try {
-    //         ifObj ? (result[k] = func()) : (result.push(func()));
-    //     }
-    //     catch (ex) {
-    //         cb(ex, result);
-    //         return false;
-    //     }
-    // });
+    queue.queue(function(next){        // 所有操作正常完成
+        if(ifArr){                // 如果参数是数组
+            cb(null,argsArr);
+        }else{
+            var obj={},i=0;
+            task.each(sender,function(k){
+                obj[k]=argsArr[i++];
+            });
+            cb(null,obj);
+        }
+        next();
+    }).catch(function(err){        // 某个操作出现异常
+        cb(err);
+    });
+
+    queue.dequeue();
+
 };
 
 module.exports = task.series;

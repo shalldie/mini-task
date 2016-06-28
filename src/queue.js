@@ -3,9 +3,20 @@ var task = require('./core');
 task.queue = function () {
     var list = [],                                         // 队列列表
         args = [],                                         // 当前参数
-        fireState = 0;                                     // 触发状态  0-未触发过 1-触发中  2-触发完毕
+        fireState = 0,                                     // 触发状态  0-未触发过 1-触发中  2-触发完毕
+        _disable = false,
+        catchErr = task.callbacks('once memory');          // 错误的回调
+
+    function disabled(){
+        return _disable;
+    }
+
+    function disable(){
+        _disable=true;
+    }
 
     function next() {
+        if(disabled()) return;  // 如果禁用了，返回 
         fireState = 1;
         if (!list.length) {  // 如果队列已经执行完毕，返回
             fireState = 2;
@@ -18,7 +29,12 @@ task.queue = function () {
 
     function queue(cb) {
         list.push(function () {
-            cb.apply(null, args);
+            try {
+                cb.apply(null, args);
+            } catch (err) {
+                disabled();
+                catchErr.fire(err);
+            }
         });
         if (fireState == 2) {  // 如果队列已经执行完毕，重新触发
             next();
@@ -53,7 +69,12 @@ task.queue = function () {
         queue: queue,
         will: will,
         delay: delay,
-        dequeue: dequeue
+        dequeue: dequeue,
+        catch:function(cb){
+            catchErr.add(cb);
+        },
+        disable:disable,
+        disabled:disabled
     };
 };
 

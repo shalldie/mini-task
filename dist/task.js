@@ -1,4 +1,60 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = function () {
+    require('./series');
+};
+},{"./series":2}],2:[function(require,module,exports){
+var task = require('./../core');
+
+task.series = function (sender, cb) {
+    var ifArr = task.type(sender) === "array";
+    
+    var queueArr=[];  // 用于存放队列的数组
+
+    var argsArr=[];      // 参数数组
+
+    var queue=task.queue(); // 队列
+
+    task.each(sender,function(k,func){
+        queueArr.push(func);
+    });
+
+    var func=function(next){
+        var args=task.makeArray(arguments);
+        args.shift();  // 去除第一个next，以便获取参数
+        if(args.length<=1){
+            argsArr.push(args[0]);
+        }else{
+            argsArr.push(args);
+        }
+        next();
+    };
+
+    task.each(queueArr,function(i,item){  // 队列方法，交叉放入队列
+        queue.queue(item).queue(func);
+    });
+
+
+    queue.queue(function(next){        // 所有操作正常完成
+        if(ifArr){                // 如果参数是数组
+            cb(null,argsArr);
+        }else{
+            var obj={},i=0;
+            task.each(sender,function(k){
+                obj[k]=argsArr[i++];
+            });
+            cb(null,obj);
+        }
+        next();
+    }).catch(function(err){        // 某个操作出现异常
+        cb(err);
+    });
+
+    queue.dequeue();
+
+};
+
+module.exports = task.series;
+},{"./../core":4}],3:[function(require,module,exports){
 var task = require('./core');
 task.callbacks = function () {
     var list = [],
@@ -60,13 +116,13 @@ task.callbacks = function () {
 module.exports = task.callbacks;
 
 
-},{"./core":2}],2:[function(require,module,exports){
+},{"./core":4}],4:[function(require,module,exports){
 var task = {
     ver:'1.0.0'
 };
 
 module.exports = task;
-},{}],3:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var task = require("./core");
 var callbacks = require("./callbacks");
 
@@ -77,13 +133,17 @@ task.deferred = function () {
         ['reject', 'catch', task.callbacks('once memory'), 'rejected']
     ];
 
+    var _state = 'pending';    // 当前状态
+
     var dfd = {                // 返回的延迟对象
-        state: 'pending',      // 状态
+        state: function () {
+            return _state;
+        },      // 状态
         promise: function () { // promise - 仅提供接口用于注册/订阅
             var self = this;
             var pro = {
                 state: function () {
-                    return self.state;
+                    return _state;
                 }
             };
             task.each(tuples, function (i, tuple) {
@@ -96,7 +156,7 @@ task.deferred = function () {
     task.each(tuples, function (i, tuple) {
         dfd[tuple[0]] = function () {       // 触发
             tuple[2].fire.apply(tuple[2], task.makeArray(arguments));
-            this.state = tuple[3];
+            _state = tuple[3];
             return this;
         };
         dfd[tuple[1]] = function (cb) {     // 绑定
@@ -109,7 +169,7 @@ task.deferred = function () {
 };
 
 module.exports = task.deferred;
-},{"./callbacks":1,"./core":2}],4:[function(require,module,exports){
+},{"./callbacks":3,"./core":4}],6:[function(require,module,exports){
 var task = require('./../core');
 
 module.exports = function () {
@@ -119,7 +179,7 @@ module.exports = function () {
         });
     }
 }
-},{"./../core":2}],5:[function(require,module,exports){
+},{"./../core":4}],7:[function(require,module,exports){
 var amd = require('./amd');
 var global = require('./global');
 
@@ -127,7 +187,7 @@ module.exports = function () {
     amd();
     global();
 }
-},{"./amd":4,"./global":6}],6:[function(require,module,exports){
+},{"./amd":6,"./global":8}],8:[function(require,module,exports){
 var task = require("./../core");
 
 module.exports = function () {
@@ -142,15 +202,88 @@ module.exports = function () {
         };
     }
 }
-},{"./../core":2}],7:[function(require,module,exports){
+},{"./../core":4}],9:[function(require,module,exports){
+/*
+* Array.prototype.indexOf
+*/
+
+Array.prototype.indexOf = Array.prototype.indexOf || function (item) {
+    var index = -1;
+    for (var i = 0, len = this.length; i < len; i++) {
+        if (this[i] == item) {
+            index = i;
+            break;
+        }
+    }
+    return index;
+};
+
+// public
+/*
+*  格式化 
+*/
+String.prototype.format = function () {
+    var args = arguments;
+    return this.replace(/\{(\d+?)\}/g, function (g0, g1) {
+        return args[+g1];
+    });
+};
+
+/*
+* Array.prototype.forEach
+*/
+Array.prototype.forEach = Array.prototype.forEach || function (callback) {
+    callback = callback || function () { };
+    for (var i = 0, len = this.length; i < len; i++) {
+        callback.call(this[i], this[i], i);
+    }
+};
+
+/*
+* Array.prototype.some
+*/
+
+Array.prototype.some = Array.prototype.some || function (callback) {
+    callback = callback || function () { return true; };
+    for (var i = 0, len = this.length; i < len; i++) {
+        if (callback.call(this[i], this[i], i)) return true;
+    }
+    return false;
+}
+
+/*
+* Array.prototype.map
+*/
+Array.prototype.map = Array.prototype.map || function (callback) {
+    callback = callback || function () { };
+    var arr = [];
+    for (var i = 0, len = this.length; i < len; i++) {
+        arr.push(callback(this[i], i));
+    }
+    return arr;
+};
+
+module.exports = {};
+},{}],10:[function(require,module,exports){
 var task = require('./core');
 
 task.queue = function () {
     var list = [],                                         // 队列列表
         args = [],                                         // 当前参数
-        fireState = 0;                                     // 触发状态  0-未触发过 1-触发中  2-触发完毕
+        fireState = 0,                                     // 触发状态  0-未触发过 1-触发中  2-触发完毕
+        _disable = false,
+        catchErr = task.callbacks('once memory');          // 错误的回调
+
+    function disabled(){
+        return _disable;
+    }
+
+    function disable(){
+        _disable=true;
+    }
 
     function next() {
+        if(disabled()) return;  // 如果禁用了，返回 
         fireState = 1;
         if (!list.length) {  // 如果队列已经执行完毕，返回
             fireState = 2;
@@ -163,7 +296,12 @@ task.queue = function () {
 
     function queue(cb) {
         list.push(function () {
-            cb.apply(null, args);
+            try {
+                cb.apply(null, args);
+            } catch (err) {
+                disabled();
+                catchErr.fire(err);
+            }
         });
         if (fireState == 2) {  // 如果队列已经执行完毕，重新触发
             next();
@@ -198,31 +336,43 @@ task.queue = function () {
         queue: queue,
         will: will,
         delay: delay,
-        dequeue: dequeue
+        dequeue: dequeue,
+        catch:function(cb){
+            catchErr.add(cb);
+        },
+        disable:disable,
+        disabled:disabled
     };
 };
 
 module.exports = task.queue;
-},{"./core":2}],8:[function(require,module,exports){
+},{"./core":4}],11:[function(require,module,exports){
+// 核心
 var task = require('./core');
 
+// 低版本浏览器扩展
+require('./extensions');
+
+// 工具模块
 require('./tool');
 
+// 基础回调模块
 require('./callbacks');
 
+// 基础异步模块
 require('./queue');
 
 require('./deferred');
 
 
-
-// require('./queue'); 
+// 异步async模块
+require('./async/async')();
 
 // 适配 amd 模式， window 环境
 require('./exports/exports')();
 
 module.exports = task;
-},{"./callbacks":1,"./core":2,"./deferred":3,"./exports/exports":5,"./queue":7,"./tool":9}],9:[function(require,module,exports){
+},{"./async/async":1,"./callbacks":3,"./core":4,"./deferred":5,"./exports/exports":7,"./extensions":9,"./queue":10,"./tool":12}],12:[function(require,module,exports){
 var task = require("./core");
 
 var tool = {
@@ -270,4 +420,4 @@ for (var k in tool) {
 }
 
 module.exports = task.tool;
-},{"./core":2}]},{},[8]);
+},{"./core":4}]},{},[11]);
