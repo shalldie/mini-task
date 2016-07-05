@@ -30,6 +30,7 @@ task.deferred = function () {
 
     task.each(tuples, function (i, tuple) {
         dfd[tuple[0]] = function () {       // 触发
+            if (_state != "pending") return;
             tuple[2].fire.apply(tuple[2], task.makeArray(arguments));
             _state = tuple[3];
             return this;

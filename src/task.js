@@ -15,6 +15,7 @@ require('./queue');
 
 require('./deferred');
 
+require('./all');
 
 // 异步async模块
 require('./async/async')();
