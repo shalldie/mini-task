@@ -13,34 +13,33 @@ var task = require('./src/task');
 // });
 
 function log() {
-    console.log(new Date().getSeconds());
+    console.log(+new Date);
 }
+
 log();
-task.parallel([
+task.waterfall([
     function (cb) {
         setTimeout(function () {
             cb(1);
-        }, 1000);
-    }, function (cb) {
+        }, 10);
+    }, function (cb, n) {
         setTimeout(function () {
-            cb(2, 3);
-        }, 2000);
-    }, function (cb) {
-        throw Error("error...");
+            cb(n + 1);
+        }, 10);
+    }, function (cb, n) {
         setTimeout(function () {
-            cb(2, 3);
-        }, 2000);
-    }, function (cb) {
+            cb(n + 1);
+        }, 10);
+    }, function (cb, n) {
         setTimeout(function () {
-            cb(2, 3);
-        }, 3000);
+            cb(n + 1);
+        }, 10);
     }
-], function (err, results) {
+], function (err, result) {
     if (err) {
         console.log(err);
         return;
     }
-    console.log(results);
+    console.log(result);
     log();
 });
-

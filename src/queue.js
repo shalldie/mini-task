@@ -32,7 +32,7 @@ task.queue = function () {
             try {
                 cb.apply(null, args);
             } catch (err) {
-                disabled();
+                disable();
                 catchArr.fire(err);
             }
         });
