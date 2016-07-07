@@ -12,34 +12,83 @@ var task = require('./src/task');
 //     console.log([].slice.call(arguments));
 // });
 
+
+// task.waterfall([
+//     function (cb) {
+//         setTimeout(function () {
+//             cb(1);
+//         }, 10);
+//     }, function (cb, n) {
+//         setTimeout(function () {
+//             cb(n + 1);
+//         }, 10);
+//     }, function (cb, n) {
+//         setTimeout(function () {
+//             cb(n + 1);
+//         }, 10);
+//     }, function (cb, n) {
+//         setTimeout(function () {
+//             cb(n + 1);
+//         }, 10);
+//     }
+// ], function (err, result) {
+//     if (err) {
+//         console.log(err);
+//         return;
+//     }
+//     console.log(result);
+//     log();
+// });
+
 function log() {
-    console.log(+new Date);
+    console.log(new Date().getSeconds());
 }
 
-log();
-task.waterfall([
+task.parallelLimit([
     function (cb) {
+        var n = 1;
         setTimeout(function () {
-            cb(1);
-        }, 10);
-    }, function (cb, n) {
+            console.log(n + "完了...")
+            log();
+            cb(n);
+        }, 1000);
+    },
+    function (cb) {
+        var n = 2;
         setTimeout(function () {
-            cb(n + 1);
-        }, 10);
-    }, function (cb, n) {
+            console.log(n + "完了...")
+            log();
+            cb(n);
+        }, 2000);
+    },
+    function (cb) {
+        var n = 3;
         setTimeout(function () {
-            cb(n + 1);
-        }, 10);
-    }, function (cb, n) {
+            console.log(n + "完了...")
+            log();
+            cb(n);
+        }, 3000);
+    },
+    function (cb) {
+        var n = 4;
         setTimeout(function () {
-            cb(n + 1);
-        }, 10);
+            console.log(n + "完了...")
+            log();
+            cb(n);
+        }, 1000);
+    },
+    function (cb) {
+        var n = 5;
+        setTimeout(function () {
+            console.log(n + "完了...")
+            log();
+            cb(n);
+        }, 1000);
     }
-], function (err, result) {
+], 2, function (err, result) {
     if (err) {
         console.log(err);
         return;
     }
     console.log(result);
-    log();
 });

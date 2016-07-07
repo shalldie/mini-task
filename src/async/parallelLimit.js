@@ -33,7 +33,10 @@ task.parallelLimit = function (actions, maxNum, callback) {
 
     queues = actions.map(function (act, i) {
         var queue = task.queue();
-        queue.queue(act);                       // 执行方法
+        queue.queue(function (next) {  // 执行方法
+            if (disabled) return;
+            act(next);
+        });
         queue.queue(function (next) {           // 处理数据
             if (disabled) {
                 return;
@@ -48,7 +51,7 @@ task.parallelLimit = function (actions, maxNum, callback) {
         });
 
         queue.queue(function (next) {            // 检测，后续处理
-
+            control();     // 看看是完成了还是继续出列
             next();
         });
         return queue;
@@ -56,14 +59,14 @@ task.parallelLimit = function (actions, maxNum, callback) {
 
 
     dfd.then(function () {
-        argsArr.unshift(null);
-        callback.apply(null, argsArr);
+        callback.call(null, argsArr);
     });
 
     dfd.catch(function (err) {
         callback(err);
     });
 
+    control();
 };
 
 module.exports = task.parallelLimit;
