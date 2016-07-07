@@ -1,6 +1,6 @@
 # Task
 
-### Include the callbacks,queue,promise,async(series...others're coming)
+### Include the callbacks,queue,promise,async(series,waterfall,parallel,parallelLimit...others're coming)
 
 ### Make it easy to control the process :).
 
