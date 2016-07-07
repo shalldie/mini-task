@@ -1,51 +1,195 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var task = require('./core');
+
+task.all = function (promises) {
+    promises = promises || [];
+    var len = promises.length,    // promise 个数
+        paramArr = [],            // 每个reject的参数
+        dfd = task.deferred(),    // 用于当前task控制的deferred
+        pro = dfd.promise();      // 用于当前返回的promise
+
+    if (len === 0) {   // 如果是个空数组，直接就返回了
+        dfd.resolve();
+        return pro;
+    }
+
+    function addThen() {   // 检测是否全部完成
+        var args = task.makeArray(arguments);
+
+        if (args.length <= 1) {             // 保存到数组，用户回调
+            paramArr.push(args[0]);
+        } else {
+            paramArr.push(args);
+        }
+
+        if (paramArr.length >= len) {         // 如果所有promise都resolve完毕
+            dfd.resolve.apply(dfd, paramArr);
+        }
+    }
+
+    function addCatch() {
+        var args = task.makeArray(arguments);
+        dfd.reject.apply(dfd, args);
+    }
+
+    task.each(promises, function (index, promise) {
+        promise.then(addThen).catch(addCatch);
+    });
+
+    return pro;
+};
+
+module.exports = task.all; 
+},{"./core":8}],2:[function(require,module,exports){
 module.exports = function () {
     require('./series');
+    require('./parallel');
+    require('./parallelLimit');
+    require('./waterfall');
 };
-},{"./series":2}],2:[function(require,module,exports){
+},{"./parallel":3,"./parallelLimit":4,"./series":5,"./waterfall":6}],3:[function(require,module,exports){
+var task = require('./../core');
+
+task.parallel = function (actions, callback) {
+
+    var promises = actions.map(function (act) {
+        var dfd = task.deferred();
+        try {
+            act(function () {
+                dfd.resolve.apply(dfd, arguments);
+            });
+        } catch (err) {
+            dfd.reject(err);
+        }
+        return dfd.promise();
+    });
+
+    task.all(promises).then(function () {
+        var args = task.makeArray(arguments);
+        callback(null, args);
+    }).catch(function (err) {
+        callback(err);
+    });
+};
+
+module.exports = task.parallel;
+},{"./../core":8}],4:[function(require,module,exports){
+var task = require('./../core');
+
+task.parallelLimit = function (actions, maxNum, callback) {
+    var num = 0,  // 当前执行的数量
+        nowIndex = 0, // 当前释放的队列的索引
+        len = actions.length,
+        argsArr = new Array(len),  // 用于存储返回值
+        dfd = task.deferred(),     // 用于当前操作的deferred
+        queues = [],
+        disabled = false,
+        disable = function () {
+            disable = true;
+        }
+
+    function ifDone() {  // 检测是否完成
+        return num == 0 && nowIndex >= len;
+    }
+
+    var control = function () {
+        // 释放队列
+        for (; nowIndex < len && num < maxNum; nowIndex++) {
+            num++;
+            queues[nowIndex].dequeue();
+        }
+
+        // 如果完成
+        if (ifDone()) {
+            dfd.resolve();
+            disable();
+            return;
+        }
+    };
+
+    queues = actions.map(function (act, i) {
+        var queue = task.queue();
+        queue.queue(function (next) {  // 执行方法
+            if (disabled) return;
+            act(next);
+        });
+        queue.queue(function (next) {           // 处理数据
+            if (disabled) {
+                return;
+            }
+            var args = task.makeArray(arguments).slice(1);
+            if (args.length <= 1) args = args[0];   // 如果只有一个参数，则直接插入，用换成数组
+            argsArr[i] = args;
+            num--; next();
+        });
+        queue.catch(function (err) {
+            dfd.reject(err);
+        });
+
+        queue.queue(function (next) {            // 检测，后续处理
+            control();     // 看看是完成了还是继续出列
+            next();
+        });
+        return queue;
+    });
+
+
+    dfd.then(function () {
+        callback.call(null, argsArr);
+    });
+
+    dfd.catch(function (err) {
+        callback(err);
+    });
+
+    control();
+};
+
+module.exports = task.parallelLimit;
+},{"./../core":8}],5:[function(require,module,exports){
 var task = require('./../core');
 
 task.series = function (sender, cb) {
     var ifArr = task.type(sender) === "array";
-    
-    var queueArr=[];  // 用于存放队列的数组
 
-    var argsArr=[];      // 参数数组
+    var queueArr = [];  // 用于存放队列的数组
 
-    var queue=task.queue(); // 队列
+    var argsArr = [];      // 参数数组
 
-    task.each(sender,function(k,func){
+    var queue = task.queue(); // 队列
+
+    task.each(sender, function (k, func) {
         queueArr.push(func);
     });
 
-    var func=function(next){
-        var args=task.makeArray(arguments);
+    var func = function (next) {
+        var args = task.makeArray(arguments);
         args.shift();  // 去除第一个next，以便获取参数
-        if(args.length<=1){
+        if (args.length <= 1) {
             argsArr.push(args[0]);
-        }else{
+        } else {
             argsArr.push(args);
         }
         next();
     };
 
-    task.each(queueArr,function(i,item){  // 队列方法，交叉放入队列
+    task.each(queueArr, function (i, item) {  // 队列方法，交叉放入队列
         queue.queue(item).queue(func);
     });
 
 
-    queue.queue(function(next){        // 所有操作正常完成
-        if(ifArr){                // 如果参数是数组
-            cb(null,argsArr);
-        }else{
-            var obj={},i=0;
-            task.each(sender,function(k){
-                obj[k]=argsArr[i++];
+    queue.queue(function (next) {        // 所有操作正常完成
+        if (ifArr) {                // 如果参数是数组
+            cb(null, argsArr);
+        } else {
+            var obj = {}, i = 0;
+            task.each(sender, function (k) {
+                obj[k] = argsArr[i++];
             });
-            cb(null,obj);
+            cb(null, obj);
         }
         next();
-    }).catch(function(err){        // 某个操作出现异常
+    }).catch(function (err) {        // 某个操作出现异常
         cb(err);
     });
 
@@ -54,7 +198,31 @@ task.series = function (sender, cb) {
 };
 
 module.exports = task.series;
-},{"./../core":4}],3:[function(require,module,exports){
+},{"./../core":8}],6:[function(require,module,exports){
+var task = require('./../core');
+
+task.waterfall = function (actions, callback) {
+    var queue = task.queue(),
+        dfd = task.deferred();
+    task.each(actions, function () {
+        queue.queue(this);
+    });
+    queue.queue(function (next) {  // 全部执行完毕
+        var args = task.makeArray(arguments).slice(1);
+        args.unshift(null);
+        callback.apply(null, args);
+        next();
+    });
+
+    queue.catch(function (err) {
+        callback(err);
+    });
+
+    queue.dequeue();
+};
+
+module.exports = task.waterfall;
+},{"./../core":8}],7:[function(require,module,exports){
 var task = require('./core');
 task.callbacks = function () {
     var list = [],
@@ -116,13 +284,13 @@ task.callbacks = function () {
 module.exports = task.callbacks;
 
 
-},{"./core":4}],4:[function(require,module,exports){
+},{"./core":8}],8:[function(require,module,exports){
 var task = {
     ver:'1.0.0'
 };
 
 module.exports = task;
-},{}],5:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var task = require("./core");
 var callbacks = require("./callbacks");
 
@@ -155,6 +323,7 @@ task.deferred = function () {
 
     task.each(tuples, function (i, tuple) {
         dfd[tuple[0]] = function () {       // 触发
+            if (_state != "pending") return;
             tuple[2].fire.apply(tuple[2], task.makeArray(arguments));
             _state = tuple[3];
             return this;
@@ -169,7 +338,7 @@ task.deferred = function () {
 };
 
 module.exports = task.deferred;
-},{"./callbacks":3,"./core":4}],6:[function(require,module,exports){
+},{"./callbacks":7,"./core":8}],10:[function(require,module,exports){
 var task = require('./../core');
 
 module.exports = function () {
@@ -179,7 +348,7 @@ module.exports = function () {
         });
     }
 }
-},{"./../core":4}],7:[function(require,module,exports){
+},{"./../core":8}],11:[function(require,module,exports){
 var amd = require('./amd');
 var global = require('./global');
 
@@ -187,7 +356,7 @@ module.exports = function () {
     amd();
     global();
 }
-},{"./amd":6,"./global":8}],8:[function(require,module,exports){
+},{"./amd":10,"./global":12}],12:[function(require,module,exports){
 var task = require("./../core");
 
 module.exports = function () {
@@ -202,7 +371,7 @@ module.exports = function () {
         };
     }
 }
-},{"./../core":4}],9:[function(require,module,exports){
+},{"./../core":8}],13:[function(require,module,exports){
 /*
 * Array.prototype.indexOf
 */
@@ -264,7 +433,7 @@ Array.prototype.map = Array.prototype.map || function (callback) {
 };
 
 module.exports = {};
-},{}],10:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var task = require('./core');
 
 task.queue = function () {
@@ -272,18 +441,18 @@ task.queue = function () {
         args = [],                                         // 当前参数
         fireState = 0,                                     // 触发状态  0-未触发过 1-触发中  2-触发完毕
         _disable = false,
-        catchErr = task.callbacks('once memory');          // 错误的回调
+        catchArr = task.callbacks('once memory');          // 错误的回调
 
-    function disabled(){
+    function disabled() {
         return _disable;
     }
 
-    function disable(){
-        _disable=true;
+    function disable() {
+        _disable = true;
     }
 
     function next() {
-        if(disabled()) return;  // 如果禁用了，返回 
+        if (disabled()) return;  // 如果禁用了，返回 
         fireState = 1;
         if (!list.length) {  // 如果队列已经执行完毕，返回
             fireState = 2;
@@ -299,8 +468,8 @@ task.queue = function () {
             try {
                 cb.apply(null, args);
             } catch (err) {
-                disabled();
-                catchErr.fire(err);
+                disable();
+                catchArr.fire(err);
             }
         });
         if (fireState == 2) {  // 如果队列已经执行完毕，重新触发
@@ -337,16 +506,16 @@ task.queue = function () {
         will: will,
         delay: delay,
         dequeue: dequeue,
-        catch:function(cb){
-            catchErr.add(cb);
+        catch: function (cb) {
+            catchArr.add(cb);
         },
-        disable:disable,
-        disabled:disabled
+        disable: disable,
+        disabled: disabled
     };
 };
 
 module.exports = task.queue;
-},{"./core":4}],11:[function(require,module,exports){
+},{"./core":8}],15:[function(require,module,exports){
 // 核心
 var task = require('./core');
 
@@ -364,6 +533,7 @@ require('./queue');
 
 require('./deferred');
 
+require('./all');
 
 // 异步async模块
 require('./async/async')();
@@ -372,7 +542,7 @@ require('./async/async')();
 require('./exports/exports')();
 
 module.exports = task;
-},{"./async/async":1,"./callbacks":3,"./core":4,"./deferred":5,"./exports/exports":7,"./extensions":9,"./queue":10,"./tool":12}],12:[function(require,module,exports){
+},{"./all":1,"./async/async":2,"./callbacks":7,"./core":8,"./deferred":9,"./exports/exports":11,"./extensions":13,"./queue":14,"./tool":16}],16:[function(require,module,exports){
 var task = require("./core");
 
 var tool = {
@@ -420,4 +590,4 @@ for (var k in tool) {
 }
 
 module.exports = task.tool;
-},{"./core":4}]},{},[11]);
+},{"./core":8}]},{},[15]);

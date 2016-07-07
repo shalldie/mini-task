@@ -193,3 +193,18 @@
 
     Done,description is coming.
     已完成，待添加描述。
+
+#### waterfall
+
+Done,description is coming.
+已完成，待添加描述。
+
+#### parallel
+
+Done,description is coming.
+已完成，待添加描述。
+
+#### parallelLimit
+
+Done,description is coming.
+已完成，待添加描述。
