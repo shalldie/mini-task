@@ -1,12 +1,20 @@
 {
-  "name": "task",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "name": "simple-task",
+  "version": "0.0.1",
+  "description": "A simple tool to make it easy to control async tasks.",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "shalldie",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shalldie/simple-task.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shalldie/simple-task/issues"
+  },
+  "homepage": "https://github.com/shalldie/simple-task#readme",
   "license": "ISC",
   "devDependencies": {
     "browserify": "^13.0.1",

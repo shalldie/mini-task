@@ -1,4 +1,4 @@
-var task = require('./src/task');
+var task = require('./lib/task');
 
 // var dfd1 = task.deferred();
 

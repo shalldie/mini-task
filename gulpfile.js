@@ -8,8 +8,8 @@ var gulp = require('gulp'),
     rename = require('gulp-rename');
 
 var paths = {
-    jsFrom: './src/**/*.js',  // 所有js文件
-    jsBase: './src/task.js',  // 入口文件
+    jsFrom: './lib/**/*.js',  // 所有js文件
+    jsBase: './lib/task.js',  // 入口文件
     jsTo: './dist',
     jsName: 'task.js',
     jsMinName: 'task.min.js'
