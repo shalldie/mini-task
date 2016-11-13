@@ -1,94 +1,60 @@
-var task = require('./lib/task');
+/**
+ * test task
+ */
+let task = require('./index');
 
-// var dfd1 = task.deferred();
+// callbacks
 
-// var dfd2 = task.deferred();
+console.log('------------------------callbacks');
+let cb = task.callbacks();
 
-// dfd1.resolve(1);
+cb.add(n => console.log(n));
+cb.add(n => console.log(n + n));
 
-// dfd2.resolve(2, 3);
-
-// task.all([dfd1, dfd2]).then(function () {
-//     console.log([].slice.call(arguments));
-// });
+cb.fire(1);
 
 
-// task.waterfall([
-//     function (cb) {
-//         setTimeout(function () {
-//             cb(1);
-//         }, 10);
-//     }, function (cb, n) {
-//         setTimeout(function () {
-//             cb(n + 1);
-//         }, 10);
-//     }, function (cb, n) {
-//         setTimeout(function () {
-//             cb(n + 1);
-//         }, 10);
-//     }, function (cb, n) {
-//         setTimeout(function () {
-//             cb(n + 1);
-//         }, 10);
-//     }
-// ], function (err, result) {
-//     if (err) {
-//         console.log(err);
-//         return;
-//     }
-//     console.log(result);
-//     log();
-// });
+console.log('------------------------callbacks-memory');
+cb = task.callbacks('memory');
 
-function log() {
-    console.log(new Date().getSeconds());
-}
+cb.add(n => console.log(n));
 
-task.parallelLimit([
-    function (cb) {
-        var n = 1;
-        setTimeout(function () {
-            console.log(n + "完了...")
-            log();
-            cb(n);
-        }, 1000);
-    },
-    function (cb) {
-        var n = 2;
-        setTimeout(function () {
-            console.log(n + "完了...")
-            log();
-            cb(n);
-        }, 2000);
-    },
-    function (cb) {
-        var n = 3;
-        setTimeout(function () {
-            console.log(n + "完了...")
-            log();
-            cb(n);
-        }, 3000);
-    },
-    function (cb) {
-        var n = 4;
-        setTimeout(function () {
-            console.log(n + "完了...")
-            log();
-            cb(n);
-        }, 1000);
-    },
-    function (cb) {
-        var n = 5;
-        setTimeout(function () {
-            console.log(n + "完了...")
-            log();
-            cb(n);
-        }, 1000);
-    }
-], 2, function (err, result) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    console.log(result);
-});
+cb.fire(1);
+
+cb.add(n => console.log(n + n));
+
+
+console.log('------------------------callbacks-stopOnFalse');
+cb = task.callbacks('stopOnFalse');
+
+cb.add(n => (console.log(n), false));
+
+cb.add(n => console.log(n + n));
+
+cb.fire(1);
+
+
+console.log('------------------------callbacks-once');
+cb = task.callbacks('once');
+
+cb.add(n => (console.log(n), false));
+
+cb.add(n => console.log(n + n));
+
+cb.fire(1);
+cb.fire(2);
+
+console.log('------------------------callbacks-once-memory');
+cb = task.callbacks('once memory');
+
+cb.add(n => (console.log(n), false));
+
+cb.add(n => console.log(n + n));
+
+cb.fire(1);
+cb.fire(2);
+
+cb.add(n => console.log(n * 3));
+
+
+
