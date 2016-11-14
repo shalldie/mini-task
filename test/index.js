@@ -1,7 +1,8 @@
 let testArr = [
-    'callbacks',
-    'deferred',
-    'all'
+    // 'callbacks',
+    // 'deferred',
+    // 'all',
+    'queue'
 ];
 
 /**
@@ -116,3 +117,23 @@ function testAll() {
 }
 
 ~testArr.indexOf('all') && testAll();
+
+/**
+ * queue
+ */
+
+function testQueue() {
+    let queue = task.queue().dequeue(2, 3);
+
+    // for (let i = 0; i < 10; i++) {
+    //     queue.delay(1000).will(() => console.log(new Date().getSeconds()));
+    // }
+
+    queue.queue(function(next, num, num2) {
+        console.log(num, num2);
+        next(2);
+    });
+
+}
+
+~testArr.indexOf('queue') && testQueue();
