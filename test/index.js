@@ -1,7 +1,7 @@
 /**
  * test task
  */
-let task = require('./index');
+let task = require('./../index');
 
 // callbacks
 
