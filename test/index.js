@@ -61,5 +61,18 @@ function testCallbacks() {
 
 false && testCallbacks();
 
+/**
+ * deferred
+ */
 
+function testDeferred() {
+    let dfd = task.deferred();
+    dfd.then((n, m) => console.log(n + m));
+    // dfd.resolve(1, 2);
+    dfd.then((n, m) => console.log(n * m));
+    dfd.catch(n => console.log(n));
+    // dfd.resolve(2, 3);
+    dfd.reject('error');
+}
 
+true && testDeferred();
