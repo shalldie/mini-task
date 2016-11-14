@@ -59,7 +59,7 @@ function testCallbacks() {
     cb.add(n => console.log(n * 3));
 }
 
-testCallbacks();
+false && testCallbacks();
 
 
 
