@@ -1,3 +1,9 @@
+let testArr = [
+    'callbacks',
+    'deferred',
+    'all'
+];
+
 /**
  * test task
  */
@@ -59,20 +65,54 @@ function testCallbacks() {
     cb.add(n => console.log(n * 3));
 }
 
-false && testCallbacks();
+~testArr.indexOf('callbacks') && testCallbacks();
 
 /**
  * deferred
  */
 
 function testDeferred() {
+    console.log('------------ deferred');
     let dfd = task.deferred();
+    console.log(dfd.state());
     dfd.then((n, m) => console.log(n + m));
-    // dfd.resolve(1, 2);
+    dfd.resolve(1, 2);
+    console.log(dfd.state());
     dfd.then((n, m) => console.log(n * m));
     dfd.catch(n => console.log(n));
-    // dfd.resolve(2, 3);
-    dfd.reject('error');
+    dfd.resolve(2, 3);
+    console.log(dfd.state());
+    // dfd.reject('error');
 }
 
-true && testDeferred();
+~testArr.indexOf('deferred') && testDeferred();
+
+/**
+ * all
+ */
+
+function testAll() {
+    console.log('-------------- all');
+    let d1 = task.deferred();
+    setTimeout(function() {
+        d1.resolve(Date.now());
+    }, 1000);
+
+    let d2 = task.deferred();
+    setTimeout(function() {
+        d2.resolve(Date.now());
+    }, 2000);
+
+    let d3 = task.deferred();
+    setTimeout(function() {
+        d3.reject('err');
+    }, 1500);
+
+    task.all([d1.promise(), d2.promise(), d3.promise()]).then(function(arr) {
+        console.log(arr[1] - arr[0]);
+    }).catch(function(err) {
+        console.log(err);
+    });
+}
+
+~testArr.indexOf('all') && testAll();
