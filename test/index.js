@@ -134,6 +134,12 @@ function testQueue() {
         next(2);
     });
 
+    setTimeout(function() {
+        queue.queue(function(next, num) {
+            console.log(num);
+        });
+    }, 1000);
+
 }
 
 ~testArr.indexOf('queue') && testQueue();
