@@ -2,7 +2,8 @@ let testArr = [
     // 'callbacks',
     // 'deferred',
     // 'all',
-    'queue'
+    // 'queue',
+    'series'
 ];
 
 /**
@@ -95,23 +96,23 @@ function testDeferred() {
 function testAll() {
     console.log('-------------- all');
     let d1 = task.deferred();
-    setTimeout(function() {
+    setTimeout(function () {
         d1.resolve(Date.now());
     }, 1000);
 
     let d2 = task.deferred();
-    setTimeout(function() {
+    setTimeout(function () {
         d2.resolve(Date.now());
     }, 2000);
 
     let d3 = task.deferred();
-    setTimeout(function() {
+    setTimeout(function () {
         d3.reject('err');
     }, 1500);
 
-    task.all([d1.promise(), d2.promise(), d3.promise()]).then(function(arr) {
+    task.all([d1.promise(), d2.promise(), d3.promise()]).then(function (arr) {
         console.log(arr[1] - arr[0]);
-    }).catch(function(err) {
+    }).catch(function (err) {
         console.log(err);
     });
 }
@@ -123,19 +124,21 @@ function testAll() {
  */
 
 function testQueue() {
+    console.log('-------------------- queue');
+
     let queue = task.queue().dequeue(2, 3);
 
     // for (let i = 0; i < 10; i++) {
     //     queue.delay(1000).will(() => console.log(new Date().getSeconds()));
     // }
 
-    queue.queue(function(next, num, num2) {
+    queue.queue(function (next, num, num2) {
         console.log(num, num2);
         next(2);
     });
 
-    setTimeout(function() {
-        queue.queue(function(next, num) {
+    setTimeout(function () {
+        queue.queue(function (next, num) {
             console.log(num);
         });
     }, 1000);
@@ -143,3 +146,45 @@ function testQueue() {
 }
 
 ~testArr.indexOf('queue') && testQueue();
+
+/**
+ * series
+ */
+
+function testSeries() {
+    console.log('-----------------------series');
+    console.log(new Date().getSeconds());
+    // task.series({
+    //     age: function (next) {
+    //         setTimeout(function () {
+    //             next(12);
+    //         }, 1000);
+    //     },
+    //     name: function (next) {
+    //         setTimeout(function () {
+    //             next('tom');
+    //         }, 2000);
+    //     }
+    // }, function (err, result) {
+    //     console.log(new Date().getSeconds());
+    //     console.log(result);
+    // });
+
+    task.series([
+        function (next) {
+            setTimeout(function () {
+                next(12, 13);
+            }, 1000);
+        },
+        function (next) {
+            setTimeout(function () {
+                next('tom', 'hello');
+            }, 2000);
+        }
+    ], function (err, result) {
+        console.log(new Date().getSeconds());
+        console.log(result);
+    });
+}
+
+~testArr.indexOf('series') && testSeries();
