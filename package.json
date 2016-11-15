@@ -1,5 +1,5 @@
 {
-  "name": "simple-task",
+  "name": "mini-task",
   "version": "0.0.1",
   "description": "A simple tool to make it easy to control async tasks.",
   "main": "index.js",
@@ -9,12 +9,12 @@
   "author": "shalldie",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shalldie/simple-task.git"
+    "url": "git+https://github.com/shalldie/mini-task.git"
   },
   "bugs": {
-    "url": "https://github.com/shalldie/simple-task/issues"
+    "url": "https://github.com/shalldie/mini-task/issues"
   },
-  "homepage": "https://github.com/shalldie/simple-task#readme",
+  "homepage": "https://github.com/shalldie/mini-task#readme",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.11.4",
