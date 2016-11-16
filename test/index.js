@@ -154,37 +154,37 @@ function testQueue() {
 function testSeries() {
     console.log('-----------------------series');
     console.log(new Date().getSeconds());
-    // task.series({
-    //     age: function (next) {
-    //         setTimeout(function () {
-    //             next(12);
-    //         }, 1000);
-    //     },
-    //     name: function (next) {
-    //         setTimeout(function () {
-    //             next('tom');
-    //         }, 2000);
-    //     }
-    // }, function (err, result) {
-    //     console.log(new Date().getSeconds());
-    //     console.log(result);
-    // });
-
-    task.series([
-        function (next) {
+    task.series({
+        age: function (next) {
             setTimeout(function () {
-                next(12, 13);
+                next(12);
             }, 1000);
         },
-        function (next) {
+        name: function (next) {
             setTimeout(function () {
-                next('tom', 'hello');
+                next('tom', 'lily');
             }, 2000);
         }
-    ], function (err, result) {
+    }, function (err, result) {
         console.log(new Date().getSeconds());
         console.log(result);
     });
+
+    // task.series([
+    //     function (next) {
+    //         setTimeout(function () {
+    //             next(12, 13);
+    //         }, 1000);
+    //     },
+    //     function (next) {
+    //         setTimeout(function () {
+    //             next('tom', 'hello');
+    //         }, 2000);
+    //     }
+    // ], function (err, result) {
+    //     console.log(new Date().getSeconds());
+    //     console.log(result);
+    // });
 }
 
 ~testArr.indexOf('series') && testSeries();
