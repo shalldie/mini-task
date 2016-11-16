@@ -3,7 +3,9 @@ let testArr = [
     // 'deferred',
     // 'all',
     // 'queue',
-    'series'
+    // 'series',
+    'parallel',
+    'parallelLimit'
 ];
 
 /**
@@ -96,23 +98,23 @@ function testDeferred() {
 function testAll() {
     console.log('-------------- all');
     let d1 = task.deferred();
-    setTimeout(function () {
+    setTimeout(function() {
         d1.resolve(Date.now());
     }, 1000);
 
     let d2 = task.deferred();
-    setTimeout(function () {
+    setTimeout(function() {
         d2.resolve(Date.now());
     }, 2000);
 
     let d3 = task.deferred();
-    setTimeout(function () {
+    setTimeout(function() {
         d3.reject('err');
     }, 1500);
 
-    task.all([d1.promise(), d2.promise(), d3.promise()]).then(function (arr) {
+    task.all([d1.promise(), d2.promise(), d3.promise()]).then(function(arr) {
         console.log(arr[1] - arr[0]);
-    }).catch(function (err) {
+    }).catch(function(err) {
         console.log(err);
     });
 }
@@ -132,13 +134,13 @@ function testQueue() {
     //     queue.delay(1000).will(() => console.log(new Date().getSeconds()));
     // }
 
-    queue.queue(function (next, num, num2) {
+    queue.queue(function(next, num, num2) {
         console.log(num, num2);
         next(2);
     });
 
-    setTimeout(function () {
-        queue.queue(function (next, num) {
+    setTimeout(function() {
+        queue.queue(function(next, num) {
             console.log(num);
         });
     }, 1000);
@@ -155,17 +157,17 @@ function testSeries() {
     console.log('-----------------------series');
     console.log(new Date().getSeconds());
     task.series({
-        age: function (next) {
-            setTimeout(function () {
+        age: function(next) {
+            setTimeout(function() {
                 next(12);
             }, 1000);
         },
-        name: function (next) {
-            setTimeout(function () {
+        name: function(next) {
+            setTimeout(function() {
                 next('tom', 'lily');
             }, 2000);
         }
-    }, function (err, result) {
+    }, function(err, result) {
         console.log(new Date().getSeconds());
         console.log(result);
     });
@@ -188,3 +190,34 @@ function testSeries() {
 }
 
 ~testArr.indexOf('series') && testSeries();
+
+function testParallelLimit() {
+    console.log(new Date().getSeconds());
+    task.parallelLimit([
+        function(next) {
+            setTimeout(function() {
+                next(null, 1);
+            }, 1000);
+        },
+        function(next) {
+            setTimeout(function() {
+                next(null, 2);
+            }, 1000);
+        },
+        function(next) {
+            setTimeout(function() {
+                next(null, 3, 3);
+            }, 1000);
+        },
+        function(next) {
+            setTimeout(function() {
+                next(null, 4);
+            }, 3000);
+        }
+    ], 4, function(err, result) {
+        console.log(new Date().getSeconds());
+        console.log(result);
+    });
+}
+
+~testArr.indexOf('parallelLimit') && testParallelLimit();
