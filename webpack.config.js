@@ -1,5 +1,7 @@
-// var webpack = require('webpack');
-var path = require('path');
+// const webpack = require('webpack');
+const path = require('path');
+
+let prod = process.env.NODE_ENV === "production";
 
 module.exports = {
     entry: {
@@ -7,7 +9,7 @@ module.exports = {
     },
     output: {
         path: './dist',
-        filename: '[name].js'
+        filename: prod ? '[name].min.js' : '[name].js'
     },
     eslint: {
         configFile: './.eslintrc'
@@ -28,5 +30,12 @@ module.exports = {
 
         }
     },
+    // plugins: [
+    //     new webpack.optimize.UglifyJsPlugin({
+    //         compress: {
+    //             warnings: false
+    //         }
+    //     })
+    // ],
     externals: {}
 };
