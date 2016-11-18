@@ -4,7 +4,6 @@
   "description": "A simple tool to make it easy to control async tasks.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "export NODE_ENV=development;webpack --progress --colors",
     "pro": "export NODE_ENV=production;webpack -p --progress --colors",
     "bundle": "npm run dev & npm run pro"
