@@ -7,7 +7,7 @@ module.exports = {
     },
     output: {
         path: './dist',
-        filename: '[name].min.js'
+        filename: '[name].js'
     },
     eslint: {
         configFile: './.eslintrc'
