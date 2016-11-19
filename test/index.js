@@ -1,12 +1,12 @@
 let testArr = [
     // 'callbacks',
     // 'deferred',
-    // 'all',
+    'all',
     // 'queue',
     // 'series',
     // 'parallel',
     // 'parallelLimit',
-    'waterfall'
+    // 'waterfall'
 ];
 
 /**
@@ -101,7 +101,7 @@ function testAll() {
     let d1 = task.deferred();
     setTimeout(function () {
         d1.resolve(Date.now());
-    }, 1000);
+    }, 3000);
 
     let d2 = task.deferred();
     setTimeout(function () {
@@ -110,11 +110,12 @@ function testAll() {
 
     let d3 = task.deferred();
     setTimeout(function () {
-        d3.reject('err');
+        d3.resolve('err');
     }, 1500);
 
     task.all([d1.promise(), d2.promise(), d3.promise()]).then(function (arr) {
-        console.log(arr[1] - arr[0]);
+        console.log(arr);
+        // console.log(arr[1] - arr[0]);
     }).catch(function (err) {
         console.log(err);
     });

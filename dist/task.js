@@ -329,7 +329,9 @@
 	    promises = _.makeArray(promises);
 	    var len = promises.length,
 	        // promise 个数
-	    argsArr = [],
+	    resNum = 0,
+	        // resolve 的数量
+	    argsArr = new Array(len),
 	        // 每个reject的参数
 	    dfd = task.deferred(),
 	        // 用于当前task控制的deferred
@@ -343,16 +345,18 @@
 
 	    function addThen() {
 	        // 检测是否全部完成
+	        resNum++;
 	        var args = _.makeArray(arguments);
+	        var index = args.shift(); // 当前参数在promises中的索引
 
 	        if (args.length <= 1) {
 	            // 保存到数组，用户回调
-	            argsArr.push(args[0]);
+	            argsArr[index] = args[0];
 	        } else {
-	            argsArr.push(args);
+	            argsArr[index] = args;
 	        }
 
-	        if (argsArr.length >= len) {
+	        if (resNum >= len) {
 	            // 如果所有promise都resolve完毕
 	            dfd.resolve(argsArr);
 	        }
@@ -365,7 +369,9 @@
 	    }
 
 	    _.each(promises, function (index, promise) {
-	        promise.then(addThen).catch(addCatch);
+	        promise.then(function () {
+	            addThen.apply(undefined, [index].concat(Array.prototype.slice.call(arguments)));
+	        }).catch(addCatch);
 	    });
 
 	    return pro;
