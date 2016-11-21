@@ -103,7 +103,7 @@
 	'use strict';
 
 	var task = {
-	    ver: '1.0.0'
+	    ver: '0.0.4'
 	};
 
 	module.exports = task;
