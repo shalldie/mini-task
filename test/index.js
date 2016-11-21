@@ -1,8 +1,8 @@
 let testArr = [
     // 'callbacks',
     // 'deferred',
-    'all',
-    // 'queue',
+    // 'all',
+    'queue',
     // 'series',
     // 'parallel',
     // 'parallelLimit',
@@ -138,12 +138,13 @@ function testQueue() {
 
     queue.queue(function (next, num, num2) {
         console.log(num, num2);
-        next(2);
+        next(2, 4);
     });
 
     setTimeout(function () {
-        queue.queue(function (next, num) {
-            console.log(num);
+        queue.queue(function (next, num, num2) {
+            console.log(num, num2);
+            next();
         });
     }, 1000);
 

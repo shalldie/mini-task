@@ -103,7 +103,7 @@
 	'use strict';
 
 	var task = {
-	    ver: '0.0.4'
+	    ver: '0.0.5'
 	};
 
 	module.exports = task;
@@ -471,13 +471,13 @@
 	            return this;
 	        }
 
+	        args = _.makeArray(arguments); // 处理参数
+
 	        if (!list.length) {
 	            // 出列完全
 	            state = 2;
 	            return this;
 	        }
-
-	        args = _.makeArray(arguments); // 处理参数
 
 	        var nextArgs = [next].concat(_toConsumableArray(args));
 
