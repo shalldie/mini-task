@@ -136,18 +136,21 @@ function testQueue() {
     //     queue.delay(1000).will(() => console.log(new Date().getSeconds()));
     // }
 
-    queue.queue(function (next, num, num2) {
-        console.log(num, num2);
-        next(2, 4);
-    });
+    // queue.queue(function (next, num, num2) {
+    //     console.log(num, num2);
+    //     next(2, 4);
+    // });
 
-    setTimeout(function () {
-        queue.queue(function (next, num, num2) {
-            console.log(num, num2);
-            next();
-        });
-    }, 1000);
+    // setTimeout(function () {
+    //     queue.queue(function (next, num, num2) {
+    //         console.log(num, num2);
+    //         next();
+    //     });
+    // }, 1000);
 
+    for (let i = 0; i < 10; i++) {
+        queue.will(() => console.log(new Date().getSeconds())).delay(1000);
+    }
 }
 
 ~testArr.indexOf('queue') && testQueue();

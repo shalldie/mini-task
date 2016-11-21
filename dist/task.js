@@ -516,6 +516,16 @@
 	        });
 	    }
 
+	    /**
+	     * 添加错误处理函数
+	     * 
+	     * @param {any} queue
+	     */
+	    function catchFunc(callback) {
+	        catchArr.add(callback);
+	        return this;
+	    }
+
 	    return {
 	        disable: disable,
 	        disabled: disabled,
@@ -523,7 +533,8 @@
 	        dequeue: dequeue,
 	        getState: getState,
 	        will: will,
-	        delay: delay
+	        delay: delay,
+	        catch: catchFunc
 	    };
 	};
 
