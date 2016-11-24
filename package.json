@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "export NODE_ENV=development;webpack --progress --colors",
     "pro": "export NODE_ENV=production;webpack -p --progress --colors",
-    "bundle": "npm run dev & npm run pro"
+    "start": "npm run dev & npm run pro"
   },
   "author": "shalldie",
   "repository": {

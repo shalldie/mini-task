@@ -54,7 +54,9 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	/**
 	 * core
@@ -87,14 +89,32 @@
 	task.queue = __webpack_require__(7);
 
 	/**
-	 * 异步async模块
+	 * 加载异步 async 模块
 	 */
 	__webpack_require__(8);
 
-	// // 适配 amd 模式， window 环境
-	__webpack_require__(14)();
+	// 适配 node 环境， amd 模式， window 环境
 
-	module.exports = task;
+	/* eslint-disable */
+	if (( false ? 'undefined' : _typeof(exports)) == 'object') {
+	  // node 环境
+	  module.exports = task;
+	} else if (true) {
+	  // amd 模式
+	  !(__WEBPACK_AMD_DEFINE_FACTORY__ = (task), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {
+	  (function () {
+	    // 浏览器环境
+	    var _task = window.task;
+	    window.task = task;
+
+	    task.noConflict = function () {
+	      window.task = _task;
+	      return task;
+	    };
+	  })();
+	}
+	/* eslint-enable */
 
 /***/ },
 /* 2 */
@@ -836,59 +856,6 @@
 	//     // result now equals 'done'
 	//     console.log(result);
 	// });
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var amd = __webpack_require__(15);
-	var global = __webpack_require__(16);
-
-	module.exports = function () {
-	    amd();
-	    global();
-	};
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;"use strict";
-
-	var task = __webpack_require__(2);
-
-	module.exports = function () {
-	    /* eslint-disable */
-	    if (true) {
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
-	            return task;
-	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	    }
-	    /* eslint-enable */
-	};
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var task = __webpack_require__(2);
-
-	module.exports = function () {
-	    if (typeof window !== 'undefined') {
-	        var _task = window.task;
-
-	        window.task = task;
-
-	        task.noConflict = function () {
-	            window.task = _task;
-	            return task;
-	        };
-	    }
-	};
 
 /***/ }
 /******/ ]);
