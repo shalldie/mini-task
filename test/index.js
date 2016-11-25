@@ -1,8 +1,8 @@
 let testArr = [
-    // 'callbacks',
+    'callbacks',
     // 'deferred',
     // 'all',
-    'queue',
+    // 'queue',
     // 'series',
     // 'parallel',
     // 'parallelLimit',

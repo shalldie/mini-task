@@ -5,11 +5,14 @@ let prod = process.env.NODE_ENV === "production";
 
 module.exports = {
     entry: {
-        task: './index'
+        task: './lib/task'
     },
     output: {
         path: './dist',
-        filename: prod ? '[name].min.js' : '[name].js'
+        filename: prod ? '[name].min.js' : '[name].js',
+        library: 'task',
+        libraryTarget: 'umd',
+        umdNamedDefine: true
     },
     eslint: {
         configFile: './.eslintrc'

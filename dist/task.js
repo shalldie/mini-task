@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("task", [], factory);
+	else if(typeof exports === 'object')
+		exports["task"] = factory();
+	else
+		root["task"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -46,75 +56,90 @@
 
 	'use strict';
 
-	var task = __webpack_require__(1);
+	var _core = __webpack_require__(1);
 
-	module.exports = task;
+	var _core2 = _interopRequireDefault(_core);
 
-/***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
+	var _tool = __webpack_require__(2);
 
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	var _tool2 = _interopRequireDefault(_tool);
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	var _callbacks = __webpack_require__(3);
 
-	/**
-	 * core
-	 */
-	var task = __webpack_require__(2);
+	var _callbacks2 = _interopRequireDefault(_callbacks);
 
-	/**
-	 * 工具模块
-	 */
-	task.tool = __webpack_require__(3);
+	var _deferred = __webpack_require__(4);
 
-	/**
-	 * 基础回调模块
-	 */
-	task.callbacks = __webpack_require__(4);
+	var _deferred2 = _interopRequireDefault(_deferred);
 
-	/**
-	 * deferred
-	 */
-	task.deferred = __webpack_require__(5);
+	var _all = __webpack_require__(5);
 
-	/**
-	 * all
-	 */
-	task.all = __webpack_require__(6);
+	var _all2 = _interopRequireDefault(_all);
+
+	var _queue = __webpack_require__(6);
+
+	var _queue2 = _interopRequireDefault(_queue);
+
+	var _async = __webpack_require__(7);
+
+	var _async2 = _interopRequireDefault(_async);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	/**
 	 * queue
 	 */
-	task.queue = __webpack_require__(7);
+
+
+	/**
+	 * deferred
+	 */
+
+
+	/**
+	 * 工具模块
+	 */
+	_tool2.default.extend(_core2.default, {
+	  tool: _tool2.default,
+	  callbacks: _callbacks2.default,
+	  deferred: _deferred2.default,
+	  all: _all2.default,
+	  queue: _queue2.default
+	}, _async2.default);
+
+	// export { task };  // 有很多坑，，很多问题，我解决不了。
+	// 在浏览器跟node环境，始终有一个挂在 task.task 下，谁来救救我
 
 	/**
 	 * 加载异步 async 模块
 	 */
-	__webpack_require__(8);
 
-	// 适配 node 环境， amd 模式， window 环境
 
-	/* eslint-disable */
-	if (( false ? 'undefined' : _typeof(exports)) == 'object') {
-	  // node 环境
-	  module.exports = task;
-	} else if (true) {
-	  // amd 模式
-	  !(__WEBPACK_AMD_DEFINE_FACTORY__ = (task), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else {
-	  (function () {
-	    // 浏览器环境
-	    var _task = window.task;
-	    window.task = task;
+	/**
+	 * all
+	 */
 
-	    task.noConflict = function () {
-	      window.task = _task;
-	      return task;
-	    };
-	  })();
-	}
-	/* eslint-enable */
+
+	/**
+	 * 基础回调模块
+	 */
+	/**
+	 * core
+	 */
+	module.exports = _core2.default;
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = {
+	    ver: '0.0.5'
+	};
 
 /***/ },
 /* 2 */
@@ -122,22 +147,13 @@
 
 	'use strict';
 
-	var task = {
-	    ver: '0.0.5'
-	};
-
-	module.exports = task;
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	'use strict';
-
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 	/**
 	 * 工具模块
 	 */
-	var tool = {
+	exports.default = {
 	    type: function type(sender) {
 	        // sender+'' 压缩之后，比'null' 长度要少...
 	        return sender === null ? sender + '' : Object.prototype.toString.call(sender).toLowerCase().match(/\s(\S+?)\]/)[1];
@@ -181,25 +197,30 @@
 	            }
 	            return arr;
 	        }
+	    },
+	    extend: function extend() {
+	        var args = this.makeArray(arguments);
+	        var base = args.shift();
+	        for (var i = 0, len = args.length; i < len; i++) {
+	            this.each(args[i], function (k, v) {
+	                base[k] = v;
+	            });
+	        }
+	        return base;
 	    }
 	};
 
-	module.exports = tool;
-
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(3);
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 
-	/**
-	 * 基础回调模块
-	 * 
-	 * @returns callbacks
-	 */
-	var callbacks = function callbacks() {
+	exports.default = function () {
 	    var list = [],
 	        _args = (arguments[0] || '').split(' '),
 	        // 参数数组
@@ -240,11 +261,11 @@
 	    function fire() {
 	        if (disabled()) return this; // 如果被禁用
 
-	        fireArgs = _.makeArray(arguments); // 保存 fire 参数
+	        fireArgs = _tool2.default.makeArray(arguments); // 保存 fire 参数
 
 	        fireState = 1; // 触发中 
 
-	        _.each(list, function (index, cb) {
+	        _tool2.default.each(list, function (index, cb) {
 	            // 依次触发回调
 	            if (cb.apply(null, fireArgs) === false && stopOnFalse) {
 	                // stopOnFalse 模式下，遇到false会停止触发
@@ -278,21 +299,26 @@
 	    };
 	};
 
-	module.exports = callbacks;
+	var _tool = __webpack_require__(2);
+
+	var _tool2 = _interopRequireDefault(_tool);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 5 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(3);
-	var callbacks = __webpack_require__(4);
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 
-	var deferred = function deferred() {
+	exports.default = function () {
 	    var tuples = [// 用于存放一系列回调的 tuple 结构
 	    // 方法名 - 接口名称 - 回调列表 - 最终状态
-	    ['resolve', 'then', callbacks('once memory'), 'resolved'], ['reject', 'catch', callbacks('once memory'), 'rejected']];
+	    ['resolve', 'then', (0, _callbacks2.default)('once memory'), 'resolved'], ['reject', 'catch', (0, _callbacks2.default)('once memory'), 'rejected']];
 
 	    var _state = 'pending'; // 当前状态
 
@@ -306,7 +332,7 @@
 	            var pro = {
 	                state: self.state
 	            };
-	            _.each(tuples, function (i, tuple) {
+	            _tool2.default.each(tuples, function (i, tuple) {
 	                // 订阅接口
 	                pro[tuple[1]] = self[tuple[1]];
 	            });
@@ -314,11 +340,11 @@
 	        }
 	    };
 
-	    _.each(tuples, function (i, tuple) {
+	    _tool2.default.each(tuples, function (i, tuple) {
 	        dfd[tuple[0]] = function () {
 	            // 触发
 	            if (_state != "pending") return this;
-	            tuple[2].fire.apply(tuple[2], _.makeArray(arguments));
+	            tuple[2].fire.apply(tuple[2], _tool2.default.makeArray(arguments));
 	            _state = tuple[3];
 	            return this;
 	        };
@@ -332,28 +358,35 @@
 	    return dfd;
 	};
 
-	module.exports = deferred;
+	var _tool = __webpack_require__(2);
+
+	var _tool2 = _interopRequireDefault(_tool);
+
+	var _callbacks = __webpack_require__(3);
+
+	var _callbacks2 = _interopRequireDefault(_callbacks);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 
-	var task = __webpack_require__(2);
-	var _ = __webpack_require__(3);
-
-	var all = function all(promises) {
-	    promises = _.makeArray(promises);
+	exports.default = function (promises) {
+	    promises = _tool2.default.makeArray(promises);
 	    var len = promises.length,
 	        // promise 个数
 	    resNum = 0,
 	        // resolve 的数量
 	    argsArr = new Array(len),
 	        // 每个reject的参数
-	    dfd = task.deferred(),
+	    dfd = (0, _deferred2.default)(),
 	        // 用于当前task控制的deferred
 	    pro = dfd.promise(); // 用于当前返回的promise
 
@@ -366,7 +399,7 @@
 	    function addThen() {
 	        // 检测是否全部完成
 	        resNum++;
-	        var args = _.makeArray(arguments);
+	        var args = _tool2.default.makeArray(arguments);
 	        var index = args.shift(); // 当前参数在promises中的索引
 
 	        if (args.length <= 1) {
@@ -384,11 +417,11 @@
 
 	    function addCatch() {
 	        // 如果某个promise发生了reject 
-	        var args = _.makeArray(arguments);
+	        var args = _tool2.default.makeArray(arguments);
 	        dfd.reject.apply(dfd, _toConsumableArray(args));
 	    }
 
-	    _.each(promises, function (index, promise) {
+	    _tool2.default.each(promises, function (index, promise) {
 	        promise.then(function () {
 	            addThen.apply(undefined, [index].concat(Array.prototype.slice.call(arguments)));
 	        }).catch(addCatch);
@@ -397,20 +430,29 @@
 	    return pro;
 	};
 
-	module.exports = all;
+	var _deferred = __webpack_require__(4);
+
+	var _deferred2 = _interopRequireDefault(_deferred);
+
+	var _tool = __webpack_require__(2);
+
+	var _tool2 = _interopRequireDefault(_tool);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 
-	var _ = __webpack_require__(3);
-	var callbacks = __webpack_require__(4);
-
-	var queue = function queue() {
+	exports.default = function () {
 	    var list = [],
 	        // 回调列表
 	    _disable = false,
@@ -419,7 +461,7 @@
 	        // 当前状态  0-未触发过 1-触发中  2-触发完毕
 	    args = [],
 	        // 最后一次触发时候的参数
-	    catchArr = callbacks('once memory'); // 错误的回调对象
+	    catchArr = (0, _callbacks2.default)('once memory'); // 错误的回调对象
 
 	    /**
 	     * 禁用队列
@@ -473,7 +515,7 @@
 	            return this;
 	        }
 
-	        args = _.makeArray(arguments);
+	        args = _tool2.default.makeArray(arguments);
 	        next.apply(undefined, _toConsumableArray(args));
 	        return this;
 	    }
@@ -491,7 +533,7 @@
 	            return this;
 	        }
 
-	        args = _.makeArray(arguments); // 处理参数
+	        args = _tool2.default.makeArray(arguments); // 处理参数
 
 	        if (!list.length) {
 	            // 出列完全
@@ -503,7 +545,7 @@
 
 	        var cb = list.shift(); // 执行回调
 	        try {
-	            _.type(cb) == 'function' && cb.apply(undefined, _toConsumableArray(nextArgs));
+	            _tool2.default.type(cb) == 'function' && cb.apply(undefined, _toConsumableArray(nextArgs));
 	        } catch (err) {
 	            disable();
 	            catchArr.fire(err);
@@ -558,7 +600,59 @@
 	    };
 	};
 
-	module.exports = queue;
+	var _tool = __webpack_require__(2);
+
+	var _tool2 = _interopRequireDefault(_tool);
+
+	var _callbacks = __webpack_require__(3);
+
+	var _callbacks2 = _interopRequireDefault(_callbacks);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	/**
+	 * queue 模块
+	 * 
+	 * @export
+	 * @returns queue
+	 */
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _series = __webpack_require__(8);
+
+	var _series2 = _interopRequireDefault(_series);
+
+	var _parallel = __webpack_require__(9);
+
+	var _parallel2 = _interopRequireDefault(_parallel);
+
+	var _parallelLimit = __webpack_require__(10);
+
+	var _parallelLimit2 = _interopRequireDefault(_parallelLimit);
+
+	var _waterfall = __webpack_require__(11);
+
+	var _waterfall2 = _interopRequireDefault(_waterfall);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = {
+	    series: _series2.default,
+	    parallel: _parallel2.default,
+	    parallelLimit: _parallelLimit2.default,
+	    waterfall: _waterfall2.default
+	};
 
 /***/ },
 /* 8 */
@@ -566,31 +660,17 @@
 
 	'use strict';
 
-	var task = __webpack_require__(2);
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 
-	task.series = __webpack_require__(9);
-
-	task.parallel = __webpack_require__(10);
-
-	task.parallelLimit = __webpack_require__(12);
-
-	task.waterfall = __webpack_require__(13);
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _ = __webpack_require__(3);
-
-	var series = function series(tasks, callback) {
-	    var ifObj = _.type(tasks) == 'object'; // tasks 参数是否object类型
+	exports.default = function (tasks, callback) {
+	    var ifObj = _tool2.default.type(tasks) == 'object'; // tasks 参数是否object类型
 	    var keyList = []; // 键列表
 	    var funcList = []; // function 列表
 	    var resList = []; // 结果列表
 
-	    _.each(tasks, function (key, func) {
+	    _tool2.default.each(tasks, function (key, func) {
 	        ifObj && keyList.push(key); // 当返回类型是object的时候，键列表需要用到
 	        funcList.push(func);
 	    });
@@ -615,7 +695,7 @@
 
 	            var func = funcList.shift();
 	            func(function () {
-	                var args = _.makeArray(arguments);
+	                var args = _tool2.default.makeArray(arguments);
 	                args = args.length > 1 ? args : args[0];
 	                resList.push(args);
 	                invokeNext();
@@ -627,63 +707,56 @@
 	    }
 	};
 
-	module.exports = series;
+	var _tool = __webpack_require__(2);
+
+	var _tool2 = _interopRequireDefault(_tool);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (tasks, callback) {
+	  return (0, _parallelLimit2.default)(tasks, 0, callback);
+	};
+
+	var _parallelLimit = __webpack_require__(10);
+
+	var _parallelLimit2 = _interopRequireDefault(_parallelLimit);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
-
-	var parallelLimit = __webpack_require__(12);
-
-	module.export = function (tasks, callback) {
-	    return parallelLimit(tasks, 0, callback);
-	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
-
-/***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var _ = __webpack_require__(3);
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 
-	var deferred = __webpack_require__(5);
-
-	var all = __webpack_require__(6);
-
-	var parallelLimit = function parallelLimit(tasks, limit, callback) {
+	exports.default = function (tasks, limit, callback) {
 	    if (limit > 10000 || !limit) {
 	        // 默认最大并非量是1w
 	        limit = 10000;
 	    }
 
-	    var ifObj = _.type(tasks) == 'object'; // 是object还是array
+	    var ifObj = _tool2.default.type(tasks) == 'object'; // 是object还是array
 	    var aliveNum = 0; // 当前异步执行的数量
 	    var keyList = []; // 键的列表
 	    var funcList = []; // 异步函数的列表
 	    var dfdList = []; // 所有操作的 deferred 列表
 	    var _disabled = false; // 是否禁用
 
-	    _.each(tasks, function (k, func) {
+	    _tool2.default.each(tasks, function (k, func) {
 	        // 键值对分离
 	        ifObj && keyList.push(k); // 在参数是object的时候，需要用到键
 	        funcList.push(func);
@@ -729,14 +802,14 @@
 
 	        aliveNum++;
 
-	        var dfd = deferred();
+	        var dfd = (0, _deferred2.default)();
 
 	        var func = funcList.shift();
 
 	        try {
 	            func(function () {
 	                // 该次异步操作完毕的时候
-	                var args = _.makeArray(arguments);
+	                var args = _tool2.default.makeArray(arguments);
 	                var err = args.shift();
 	                if (err) {
 	                    invokeCallback();
@@ -763,7 +836,7 @@
 	     */
 	    function invokeCallback() {
 	        disable();
-	        all(dfdList).then(function (arr) {
+	        (0, _all2.default)(dfdList).then(function (arr) {
 	            if (ifObj) {
 	                var hash = {};
 	                for (var i = 0, len = arr.length; i < len; i++) {
@@ -779,19 +852,31 @@
 	    }
 	};
 
-	module.exports = parallelLimit;
+	var _tool = __webpack_require__(2);
+
+	var _tool2 = _interopRequireDefault(_tool);
+
+	var _deferred = __webpack_require__(4);
+
+	var _deferred2 = _interopRequireDefault(_deferred);
+
+	var _all = __webpack_require__(5);
+
+	var _all2 = _interopRequireDefault(_all);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 13 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 
-	var _ = __webpack_require__(3);
-
-	var waterfall = function waterfall(tasks, callback) {
+	exports.default = function (tasks, callback) {
 
 	    var args = []; // 最后一次的参数
 	    var _disabled = false; // 是否禁用
@@ -826,7 +911,7 @@
 	        }
 
 	        function next() {
-	            args = _.makeArray(arguments);
+	            args = _tool2.default.makeArray(arguments);
 	            var err = args.shift();
 	            if (err) {
 	                callback(err);
@@ -838,24 +923,23 @@
 	    })();
 	};
 
-	module.exports = waterfall;
+	var _tool = __webpack_require__(2);
 
-	// waterfall([
-	//     function (callback) {
-	//         callback(null, 'one', 'two');
-	//     },
-	//     function (arg1, arg2, callback) {
-	//         // arg1 now equals 'one' and arg2 now equals 'two'
-	//         callback(null, 'three');
-	//     },
-	//     function (arg1, callback) {
-	//         // arg1 now equals 'three'
-	//         callback(null, 'done');
-	//     }
-	// ], function (err, result) {
-	//     // result now equals 'done'
-	//     console.log(result);
-	// });
+	var _tool2 = _interopRequireDefault(_tool);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	/**
+	 * waterfall 模块
+	 * 
+	 * @export
+	 * @param {any} tasks
+	 * @param {any} callback
+	 */
 
 /***/ }
-/******/ ]);
+/******/ ])
+});
+;
