@@ -80,7 +80,7 @@
             wrap.innerHTML = new Date().getSeconds();
         }).delay(1000);
     }
-    q.notify(function () {
+    q.will(function () {
         wrap.innerHTML = 'over...';
     })
     q.dequeue();
