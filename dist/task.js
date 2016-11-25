@@ -107,8 +107,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  queue: _queue2.default
 	}, _async2.default);
 
-	// export { task };  // 有很多坑，，很多问题，我解决不了。
-	// 在浏览器跟node环境，始终有一个挂在 task.task 下，谁来救救我
+	/**
+	 * 适配 node,amd,global
+	 */
+
+	// export default task;  // 这样有很多问题啊，，我解决不了
+
+	// a lot of problems may appear while using webpack to browsify es6 module
 
 	/**
 	 * 加载异步 async 模块
