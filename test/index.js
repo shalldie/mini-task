@@ -1,10 +1,10 @@
 let testArr = [
-    'callbacks',
+    // 'callbacks',
     // 'deferred',
     // 'all',
     // 'queue',
     // 'series',
-    // 'parallel',
+    'parallel',
     // 'parallelLimit',
     // 'waterfall'
 ];
