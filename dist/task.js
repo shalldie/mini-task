@@ -701,6 +701,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var func = funcList.shift();
 	            func(function () {
 	                var args = _tool2.default.makeArray(arguments);
+	                var err = args.shift(); // 第一个参数，表示错误
+	                if (err) {
+	                    callback(err);
+	                    return;
+	                }
 	                args = args.length > 1 ? args : args[0];
 	                resList.push(args);
 	                invokeNext();
