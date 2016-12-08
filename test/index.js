@@ -3,8 +3,8 @@ let testArr = [
     // 'deferred',
     // 'all',
     // 'queue',
-    // 'series',
-    'parallel',
+    'series',
+    // 'parallel',
     // 'parallelLimit',
     // 'waterfall'
 ];
@@ -165,12 +165,12 @@ function testSeries() {
     task.series({
         age: function (next) {
             setTimeout(function () {
-                next(12);
+                next(null, 12);
             }, 1000);
         },
         name: function (next) {
             setTimeout(function () {
-                next('tom', 'lily');
+                next(null, 'tom', 'lily');
             }, 2000);
         }
     }, function (err, result) {
