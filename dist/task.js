@@ -143,7 +143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	exports.default = {
-	    ver: '0.0.6'
+	    ver: '0.0.7'
 	};
 
 /***/ },
