@@ -159,10 +159,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * 工具模块
 	 */
 	exports.default = {
+	    /**
+	     * 获取参数类型
+	     * 
+	     * @param {any} sender
+	     * @returns
+	     */
 	    type: function type(sender) {
 	        // sender+'' 压缩之后，比'null' 长度要少...
 	        return sender === null ? sender + '' : Object.prototype.toString.call(sender).toLowerCase().match(/\s(\S+?)\]/)[1];
 	    },
+	    /**
+	     * 遍历(伪)数组，或对象
+	     * 
+	     * @param {any} sender
+	     * @param {any} callback
+	     */
 	    each: function each(sender, callback) {
 	        var i = 0,
 	            // 循环用变量
@@ -186,10 +198,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	    },
+	    /**
+	     * 检测是否属于(伪)数组
+	     * 
+	     * @param {any} sender
+	     * @returns {string}
+	     */
 	    arrayLike: function arrayLike(sender) {
 	        // duck typing ，检测是否属于数组
 	        return this.type(sender.length) == 'number' && this.type(sender.splice) == 'function';
 	    },
+	    /**
+	     * 将一个(伪)数组转换成一个数组
+	     * 
+	     * @param {any} sender
+	     * @returns {Array}
+	     */
 	    makeArray: function makeArray(sender) {
 	        try {
 	            return [].slice.call(sender);
@@ -203,6 +227,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return arr;
 	        }
 	    },
+	    /**
+	     * 浅拷贝
+	     * 
+	     * @returns first args
+	     */
 	    extend: function extend() {
 	        var args = this.makeArray(arguments);
 	        var base = args.shift();
@@ -401,8 +430,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return pro;
 	    }
 
+	    /**
+	     * 检测是否全部完成
+	     */
 	    function addThen() {
-	        // 检测是否全部完成
 	        resNum++;
 	        var args = _tool2.default.makeArray(arguments);
 	        var index = args.shift(); // 当前参数在promises中的索引
@@ -420,8 +451,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 
+	    /**
+	     * 如果某个promise发生了reject 
+	     */
 	    function addCatch() {
-	        // 如果某个promise发生了reject 
 	        var args = _tool2.default.makeArray(arguments);
 	        dfd.reject.apply(dfd, _toConsumableArray(args));
 	    }
@@ -891,10 +924,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var args = []; // 最后一次的参数
 	    var _disabled = false; // 是否禁用
 
+	    /**
+	     * 禁用
+	     */
 	    function disable() {
 	        _disabled = true;
 	    }
 
+	    /**
+	     * 是否禁用
+	     * 
+	     * @returns
+	     */
 	    function disabled() {
 	        return _disabled;
 	    }

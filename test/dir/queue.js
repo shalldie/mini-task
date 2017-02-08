@@ -1,4 +1,4 @@
-const task = require('../../dist/task');
+const task = require('../../index');
 
 let q = task.queue().dequeue();
 
