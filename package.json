@@ -4,8 +4,8 @@
   "description": "A simple tool to make it easy to control async tasks.",
   "main": "index.js",
   "scripts": {
-    "dev": "export NODE_ENV=development;webpack --progress --colors",
-    "pro": "export NODE_ENV=production;webpack -p --progress --colors",
+    "dev": "set NODE_ENV=development;webpack --progress --colors",
+    "pro": "set NODE_ENV=production;webpack -p --progress --colors",
     "start": "npm run dev & npm run pro"
   },
   "author": "shalldie",

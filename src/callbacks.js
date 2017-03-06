@@ -46,7 +46,7 @@ export default function (cbType) {
         fireState = 1; // 触发中 
 
         _.each(list, (index, cb) => { // 依次触发回调
-            if (cb.apply(null, fireArgs) === false && stopOnFalse) { // stopOnFalse 模式下，遇到false会停止触发
+            if (cb(...fireArgs) === false && stopOnFalse) { // stopOnFalse 模式下，遇到false会停止触发
                 return false;
             }
         });
@@ -84,6 +84,3 @@ export default function (cbType) {
         disabled: disabled
     };
 }
-
-
-

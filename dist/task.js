@@ -254,15 +254,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	exports.default = function () {
+	exports.default = function (cbType) {
 	    var list = [],
-	        _args = (arguments[0] || '').split(' '),
-	        // 参数数组
+	        _args = (cbType || '').split(' '),
+	        // 回调数组
 	    fireState = 0,
 	        // 触发状态  0-未触发过 1-触发中  2-触发完毕
-	    stopOnFalse = ~_args.indexOf('stopOnFalse'),
+	    stopOnFalse = !!~_args.indexOf('stopOnFalse'),
 	        // stopOnFalse - 如果返回false就停止
-	    once = ~_args.indexOf('once'),
+	    once = !!~_args.indexOf('once'),
 	        // once - 只执行一次，即执行完毕就清空
 	    memory = ~_args.indexOf('memory') ? [] : null,
 	        // memory - 保持状态
@@ -271,13 +271,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * 添加回调函数
 	     * 
-	     * @param {any} cb
-	     * @returns callbacks
+	     * @param {function} cb
+	     * @returns {callbacks}
 	     */
 	    function add(cb) {
 	        if (memory && fireState == 2) {
 	            // 如果是memory模式，并且已经触发过
-	            cb.apply(null, fireArgs);
+	            cb.apply(undefined, _toConsumableArray(fireArgs));
 	        }
 
 	        if (disabled()) return this; // 如果被disabled
@@ -290,12 +290,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * 触发
 	     * 
 	     * @param {any} 任意参数
-	     * @returns callbacks
+	     * @returns {callbacks}
 	     */
 	    function fire() {
 	        if (disabled()) return this; // 如果被禁用
 
-	        fireArgs = _tool2.default.makeArray(arguments); // 保存 fire 参数
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	            args[_key] = arguments[_key];
+	        }
+
+	        fireArgs = args; // 保存 fire 参数
 
 	        fireState = 1; // 触发中 
 
@@ -314,14 +318,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this;
 	    }
 
+	    /**
+	     * 禁止该callbacks对象
+	     * 
+	     * @returns {callbacks}
+	     */
 	    function disable() {
-	        // 禁止
 	        list = undefined;
 	        return this;
 	    }
 
+	    /**
+	     * 获取是否被禁止
+	     * 
+	     * @returns {boolean}
+	     */
 	    function disabled() {
-	        // 获取是否被禁止
 	        return !list;
 	    }
 
@@ -338,6 +350,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _tool2 = _interopRequireDefault(_tool);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	/**
+	 * 基础回调模块
+	 * 
+	 * @export
+	 * @returns {callbacks}
+	 */
 
 /***/ },
 /* 4 */
@@ -435,7 +456,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    function addThen() {
 	        resNum++;
-	        var args = _tool2.default.makeArray(arguments);
+	        // let args = _.makeArray(arguments);
+
+	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	            args[_key] = arguments[_key];
+	        }
+
 	        var index = args.shift(); // 当前参数在promises中的索引
 
 	        if (args.length <= 1) {
@@ -455,8 +481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * 如果某个promise发生了reject 
 	     */
 	    function addCatch() {
-	        var args = _tool2.default.makeArray(arguments);
-	        dfd.reject.apply(dfd, _toConsumableArray(args));
+	        dfd.reject.apply(dfd, arguments);
 	    }
 
 	    _tool2.default.each(promises, function (index, promise) {
@@ -477,8 +502,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _tool2 = _interopRequireDefault(_tool);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 /***/ },
 /* 6 */
