@@ -16,7 +16,7 @@ export default {
      * 遍历(伪)数组，或对象
      * 
      * @param {any} sender
-     * @param {any} callback
+     * @param {function} callback
      */
     each: function (sender, callback) {
         let i = 0,                      // 循环用变量
