@@ -60,12 +60,11 @@ export default function () {
      * 
      * returns {queue}
      */
-    function dequeue() {
+    function dequeue(...args) {
         if (disabled()) {
             return this;
         }
 
-        args = _.makeArray(arguments);
         next(...args);
         return this;
     }
