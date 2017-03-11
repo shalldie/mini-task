@@ -1,8 +1,7 @@
 import deferred from './deferred';
 import _ from './tool';
 
-export default function (promises) {
-    promises = _.makeArray(promises);
+export default function (...promises) {
     let len = promises.length,    // promise 个数
         resNum = 0,               // resolve 的数量
         argsArr = new Array(len), // 每个reject的参数
